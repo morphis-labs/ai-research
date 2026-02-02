@@ -1,6 +1,6 @@
 # AI Video/Image Generation Market Research
 
-AI 비디오/이미지 생성 시장에 대한 종합적인 리서치 대시보드입니다.
+AI 비디오/이미지 생성 시장에 대한 종합적인 리서치 대시보드입니다. 
 
 ## Live Demo
 GitHub Pages: https://onelee0812.github.io/ai-video-image-research/
