@@ -1,0 +1,2755 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Category Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00d9ff, #00ff88);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+        }
+        .back-link {
+            display: inline-block;
+            color: #00d9ff;
+            text-decoration: none;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            border: 1px solid #00d9ff;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .back-link:hover {
+            background: rgba(0, 217, 255, 0.1);
+        }
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .category-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        .category-btn:hover {
+            background: rgba(0, 217, 255, 0.1);
+            border-color: #00d9ff;
+            transform: translateY(-2px);
+        }
+        .category-btn.active {
+            background: rgba(0, 217, 255, 0.2);
+            border-color: #00d9ff;
+        }
+        .category-btn h3 {
+            font-size: 1rem;
+            color: #00d9ff;
+            margin-bottom: 8px;
+        }
+        .category-btn .count {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .category-btn .funding {
+            font-size: 0.8rem;
+            color: #00ff88;
+            margin-top: 5px;
+        }
+        .category-detail {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+            display: none;
+        }
+        .category-detail.active {
+            display: block;
+        }
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .category-header h2 {
+            color: #00d9ff;
+            font-size: 1.8rem;
+        }
+        .category-stats {
+            display: flex;
+            gap: 30px;
+        }
+        .category-stats .stat {
+            text-align: center;
+        }
+        .category-stats .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00ff88;
+        }
+        .category-stats .stat-label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+        .company-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.3s;
+        }
+        .company-card:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(0, 217, 255, 0.3);
+        }
+        .company-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        .company-rank {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #00d9ff, #00ff88);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        .company-rank.gold { background: linear-gradient(135deg, #ffd700, #ffaa00); }
+        .company-rank.silver { background: linear-gradient(135deg, #c0c0c0, #a0a0a0); }
+        .company-rank.bronze { background: linear-gradient(135deg, #cd7f32, #a0522d); }
+        .company-info {
+            flex: 1;
+        }
+        .company-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        .company-name a {
+            color: #fff;
+            text-decoration: none;
+        }
+        .company-name a:hover {
+            color: #00d9ff;
+        }
+        .company-sub {
+            font-size: 0.85rem;
+            color: #888;
+        }
+        .company-metrics {
+            display: flex;
+            gap: 20px;
+            text-align: right;
+        }
+        .metric {
+            min-width: 80px;
+        }
+        .metric-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #00ff88;
+        }
+        .metric-label {
+            font-size: 0.7rem;
+            color: #888;
+        }
+        .company-description {
+            background: rgba(0, 217, 255, 0.05);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .company-description h4 {
+            color: #00d9ff;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        .company-description p {
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .company-details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        .detail-item {
+            background: rgba(255,255,255,0.03);
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .detail-label {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 4px;
+        }
+        .detail-value {
+            font-size: 0.9rem;
+            color: #fff;
+        }
+        .products-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .products-section h4 {
+            color: #00d9ff;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .product-tag {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .badge-llm { background: rgba(255,107,107,0.2); color: #ff6b6b; }
+        .badge-image { background: rgba(255,159,67,0.2); color: #ff9f43; }
+        .badge-code { background: rgba(46,213,115,0.2); color: #2ed573; }
+        .badge-infra { background: rgba(116,185,255,0.2); color: #74b9ff; }
+        .badge-enterprise { background: rgba(162,155,254,0.2); color: #a29bfe; }
+        .badge-health { background: rgba(253,121,168,0.2); color: #fd79a8; }
+        .badge-chips { background: rgba(0,206,201,0.2); color: #00cec9; }
+        .badge-fintech { background: rgba(255,234,167,0.2); color: #ffeaa7; }
+        .badge-security { background: rgba(255,107,107,0.2); color: #ff6b6b; }
+
+        @media (max-width: 1024px) {
+            .category-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .category-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .company-details {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .company-header {
+                flex-direction: column;
+            }
+            .company-metrics {
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="ai_research_dashboard.html" class="back-link">← Dashboard</a>
+        <h1>AI Category Deep Dive</h1>
+        <p class="subtitle">카테고리별 기업 순위 및 상세 프로덕트 분석</p>
+
+        <div class="category-grid" id="categoryGrid"></div>
+        <div id="categoryDetails"></div>
+    </div>
+
+    <script>
+        // Company data by category
+        const categoryData = {
+            "Foundation Models": {
+                color: "#ff6b6b",
+                totalFunding: "$40B+",
+                avgValuation: "$80B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "OpenAI",
+                        subCategory: "LLM",
+                        valuation: "$500B",
+                        funding: "$21.9B+",
+                        founded: "2015",
+                        hq: "San Francisco",
+                        users: "300M+ users",
+                        revenue: "$13B+ ARR",
+                        website: "openai.com",
+                        summary: "ChatGPT 개발사. GPT-4, GPT-4o, DALL-E 등 최첨단 AI 모델 개발. AI 산업의 선두주자.",
+                        products: ["ChatGPT", "GPT-4/4o", "DALL-E 3", "Whisper", "Codex", "GPT Store", "Sora (Video)"],
+                        investors: "Microsoft, SoftBank, Thrive Capital"
+                    },
+                    {
+                        rank: 2,
+                        name: "Anthropic",
+                        subCategory: "LLM",
+                        valuation: "$183B",
+                        funding: "$13B+",
+                        founded: "2021",
+                        hq: "San Francisco",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "anthropic.com",
+                        summary: "Claude AI 개발. AI 안전성(Constitutional AI) 중심 연구. OpenAI 출신 창업.",
+                        products: ["Claude 3.5 Sonnet", "Claude 3 Opus", "Claude API", "Claude for Enterprise"],
+                        investors: "Amazon, Google, Salesforce, Spark Capital"
+                    },
+                    {
+                        rank: 3,
+                        name: "xAI",
+                        subCategory: "LLM",
+                        valuation: "$50B",
+                        funding: "$12B",
+                        founded: "2023",
+                        hq: "Austin",
+                        users: "X/Twitter users",
+                        revenue: "-",
+                        website: "x.ai",
+                        summary: "Elon Musk 설립. Grok AI 개발. X(Twitter) 플랫폼과 통합.",
+                        products: ["Grok", "Grok-2", "xAI API"],
+                        investors: "Sequoia, a16z, Valor Equity"
+                    },
+                    {
+                        rank: 4,
+                        name: "Mistral AI",
+                        subCategory: "LLM",
+                        valuation: "$6B",
+                        funding: "$640M",
+                        founded: "2023",
+                        hq: "Paris, France",
+                        users: "Developers",
+                        revenue: "-",
+                        website: "mistral.ai",
+                        summary: "유럽 최대 AI 스타트업. 고성능 오픈소스 LLM 개발. DeepMind/Meta 출신 창업.",
+                        products: ["Mistral Large", "Mistral 7B", "Mixtral 8x7B", "Le Chat", "La Plateforme"],
+                        investors: "a16z, Lightspeed, General Catalyst"
+                    },
+                    {
+                        rank: 5,
+                        name: "Cohere",
+                        subCategory: "LLM",
+                        valuation: "$5.5B",
+                        funding: "$1.5B",
+                        founded: "2019",
+                        hq: "Toronto, Canada",
+                        users: "Enterprise",
+                        revenue: "$150M ARR",
+                        website: "cohere.com",
+                        summary: "기업용 LLM API 제공. 커스텀 AI 모델 및 RAG 솔루션 특화.",
+                        products: ["Command R+", "Embed", "Rerank", "Coral (Chat)", "Cohere for AI"],
+                        investors: "Nvidia, Salesforce, AMD, Inovia"
+                    },
+                    {
+                        rank: 6,
+                        name: "Inflection AI",
+                        subCategory: "LLM",
+                        valuation: "$4B",
+                        funding: "$1.5B",
+                        founded: "2022",
+                        hq: "Palo Alto",
+                        users: "Pi users",
+                        revenue: "-",
+                        website: "inflection.ai",
+                        summary: "Pi AI 개발. 개인화 AI 어시스턴트. DeepMind 공동창업자 설립.",
+                        products: ["Pi", "Inflection-2.5"],
+                        investors: "Microsoft, Nvidia, Reid Hoffman, Bill Gates"
+                    },
+                    {
+                        rank: 7,
+                        name: "Moonshot AI",
+                        subCategory: "LLM",
+                        valuation: "$3.3B",
+                        funding: "$1B+",
+                        founded: "2023",
+                        hq: "Beijing, China",
+                        users: "China users",
+                        revenue: "-",
+                        website: "moonshot.cn",
+                        summary: "중국 AI 스타트업. Kimi 챗봇 개발. 128K 토큰 긴 컨텍스트 특화.",
+                        products: ["Kimi Chat", "Moonshot API"],
+                        investors: "Sequoia China, Alibaba, Tencent"
+                    },
+                    {
+                        rank: 8,
+                        name: "Zhipu AI",
+                        subCategory: "LLM",
+                        valuation: "$3B",
+                        funding: "$400M+",
+                        founded: "2019",
+                        hq: "Beijing, China",
+                        users: "China Enterprise",
+                        revenue: "-",
+                        website: "zhipuai.cn",
+                        summary: "중국 AI 기업. GLM 시리즈 모델 개발. 칭화대학교 스핀오프.",
+                        products: ["ChatGLM", "GLM-4", "CodeGeeX", "CogView"],
+                        investors: "Alibaba, Tencent, Meituan"
+                    },
+                    {
+                        rank: 9,
+                        name: "AI21 Labs",
+                        subCategory: "LLM",
+                        valuation: "$1.4B",
+                        funding: "$336M",
+                        founded: "2017",
+                        hq: "Tel Aviv, Israel",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "ai21.com",
+                        summary: "이스라엘 AI 스타트업. Jamba 모델 및 Wordtune 개발.",
+                        products: ["Jamba", "Jurassic-2", "Wordtune", "AI21 Studio"],
+                        investors: "Intel, Nvidia, Google, Walden Catalyst"
+                    },
+                    {
+                        rank: 10,
+                        name: "Baichuan AI",
+                        subCategory: "LLM",
+                        valuation: "$1.2B",
+                        funding: "$300M",
+                        founded: "2023",
+                        hq: "Beijing, China",
+                        users: "China developers",
+                        revenue: "-",
+                        website: "baichuan-ai.com",
+                        summary: "중국 오픈소스 LLM 개발. Sogou 창업자 설립.",
+                        products: ["Baichuan-2", "Baichuan-53B"],
+                        investors: "Alibaba, Xiaomi, Tencent"
+                    },
+                    {
+                        rank: 11,
+                        name: "Character.AI",
+                        subCategory: "Chatbot",
+                        valuation: "$1B",
+                        funding: "$150M",
+                        founded: "2021",
+                        hq: "Palo Alto",
+                        users: "20M+ users",
+                        revenue: "-",
+                        website: "character.ai",
+                        summary: "AI 캐릭터와 대화. 엔터테인먼트/롤플레이 AI. Google 출신 창업.",
+                        products: ["Character.AI Chat", "Character Creation"],
+                        investors: "a16z, Nat Friedman"
+                    },
+                    {
+                        rank: 12,
+                        name: "Aleph Alpha",
+                        subCategory: "LLM",
+                        valuation: "$1B+",
+                        funding: "$500M",
+                        founded: "2019",
+                        hq: "Heidelberg, Germany",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "aleph-alpha.com",
+                        summary: "유럽 기업용 AI. 독일 정부/기업 대상 보안 특화 LLM.",
+                        products: ["Luminous", "Pharia-1", "Aleph Alpha API"],
+                        investors: "SAP, Bosch, Hewlett Packard"
+                    }
+                ]
+            },
+            "AI Image/Video": {
+                color: "#ff9f43",
+                totalFunding: "$1B+",
+                avgValuation: "$1B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "Midjourney",
+                        subCategory: "Image Generation",
+                        valuation: "-",
+                        funding: "Self-funded",
+                        founded: "2021",
+                        hq: "San Francisco",
+                        users: "16M+ users",
+                        revenue: "$200M+ ARR",
+                        website: "midjourney.com",
+                        summary: "AI 이미지 생성 선두주자. Discord 기반 서비스. 외부 투자 없이 성장.",
+                        products: ["Midjourney V6", "Midjourney Web", "Niji (Anime)"],
+                        investors: "Self-funded (profitable)"
+                    },
+                    {
+                        rank: 2,
+                        name: "Runway",
+                        subCategory: "Video Generation",
+                        valuation: "$1.5B",
+                        funding: "$250M",
+                        founded: "2018",
+                        hq: "New York",
+                        users: "Filmmakers",
+                        revenue: "-",
+                        website: "runwayml.com",
+                        summary: "AI 비디오 편집 및 생성. Gen-2/Gen-3 모델. 할리우드 영화 제작에 활용.",
+                        products: ["Gen-3 Alpha", "Gen-2", "RunwayML Editor", "Motion Brush"],
+                        investors: "Google, Nvidia, Salesforce Ventures"
+                    },
+                    {
+                        rank: 3,
+                        name: "Stability AI",
+                        subCategory: "Image Generation",
+                        valuation: "$1B",
+                        funding: "$200M",
+                        founded: "2019",
+                        hq: "London, UK",
+                        users: "Developers",
+                        revenue: "-",
+                        website: "stability.ai",
+                        summary: "Stable Diffusion 개발. 오픈소스 이미지 AI의 선구자.",
+                        products: ["Stable Diffusion XL", "Stable Video", "Stable Audio", "DreamStudio"],
+                        investors: "Coatue, Lightspeed, O'Shaughnessy"
+                    },
+                    {
+                        rank: 4,
+                        name: "Ideogram",
+                        subCategory: "Image Generation",
+                        valuation: "$580M",
+                        funding: "$80M",
+                        founded: "2022",
+                        hq: "Toronto, Canada",
+                        users: "Users",
+                        revenue: "-",
+                        website: "ideogram.ai",
+                        summary: "AI 이미지 생성. 텍스트 렌더링 특화. Google Brain 출신 창업.",
+                        products: ["Ideogram 2.0", "Ideogram Canvas"],
+                        investors: "a16z, Index Ventures"
+                    },
+                    {
+                        rank: 5,
+                        name: "Pika Labs",
+                        subCategory: "Video Generation",
+                        valuation: "$470M",
+                        funding: "$135M",
+                        founded: "2023",
+                        hq: "Palo Alto",
+                        users: "500K+ users",
+                        revenue: "-",
+                        website: "pika.art",
+                        summary: "AI 비디오 생성. 스탠포드 출신 창업. 간편한 비디오 생성 도구.",
+                        products: ["Pika 1.0", "Pika Web"],
+                        investors: "Spark Capital, Lightspeed"
+                    },
+                    {
+                        rank: 6,
+                        name: "Luma AI",
+                        subCategory: "Video Generation",
+                        valuation: "$400M",
+                        funding: "$85M",
+                        founded: "2021",
+                        hq: "Palo Alto",
+                        users: "Creators",
+                        revenue: "-",
+                        website: "lumalabs.ai",
+                        summary: "Dream Machine AI 비디오 생성. 3D 캡처 및 비디오 생성 통합.",
+                        products: ["Dream Machine", "Luma AI 3D Capture", "Genie"],
+                        investors: "a16z, Matrix Partners"
+                    },
+                    {
+                        rank: 7,
+                        name: "Leonardo.Ai",
+                        subCategory: "Image Generation",
+                        valuation: "-",
+                        funding: "$31M (Canva 인수)",
+                        founded: "2022",
+                        hq: "Sydney, Australia",
+                        users: "8M+ users",
+                        revenue: "-",
+                        website: "leonardo.ai",
+                        summary: "AI 이미지 생성. 게임/크리에이티브 자산 특화. Canva에 인수됨.",
+                        products: ["Leonardo.AI Image", "Phoenix Model", "Alchemy"],
+                        investors: "Blackbird (Canva acquired)"
+                    },
+                    {
+                        rank: 8,
+                        name: "Kling AI",
+                        subCategory: "Video Generation",
+                        valuation: "-",
+                        funding: "-",
+                        founded: "2024",
+                        hq: "Beijing, China",
+                        users: "Creators",
+                        revenue: "-",
+                        website: "klingai.com",
+                        summary: "중국 Kuaishou AI 비디오 생성. 고품질 텍스트-비디오 변환.",
+                        products: ["Kling Video Generation"],
+                        investors: "Kuaishou (parent company)"
+                    },
+                    {
+                        rank: 9,
+                        name: "Higgsfield AI",
+                        subCategory: "Video Generation",
+                        valuation: "-",
+                        funding: "$20M",
+                        founded: "2023",
+                        hq: "San Francisco",
+                        users: "541K IG followers",
+                        revenue: "-",
+                        website: "higgsfield.ai",
+                        summary: "AI 비디오 생성 플랫폼. 소셜 미디어 특화.",
+                        products: ["Higgsfield Video", "Diffuse"],
+                        investors: "Benchmark"
+                    }
+                ]
+            },
+            "AI Audio/Voice": {
+                color: "#9b59b6",
+                totalFunding: "$450M+",
+                avgValuation: "$1.5B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "ElevenLabs",
+                        subCategory: "Voice Synthesis",
+                        valuation: "$3.3B",
+                        funding: "$180M",
+                        founded: "2022",
+                        hq: "New York",
+                        users: "1M+ users",
+                        revenue: "$90M ARR",
+                        website: "elevenlabs.io",
+                        summary: "AI 음성 합성 및 더빙. TTS 선두주자. 29개국 언어 지원.",
+                        products: ["Voice Cloning", "Text-to-Speech", "AI Dubbing", "Voice Library", "Projects"],
+                        investors: "a16z, ICONIQ, Nat Friedman"
+                    },
+                    {
+                        rank: 2,
+                        name: "Descript",
+                        subCategory: "Audio Editing",
+                        valuation: "$553M",
+                        funding: "$100M",
+                        founded: "2017",
+                        hq: "San Francisco",
+                        users: "Podcasters",
+                        revenue: "$55M ARR",
+                        website: "descript.com",
+                        summary: "AI 오디오/비디오 편집. 텍스트 기반 편집. Overdub 음성 클론.",
+                        products: ["Descript Editor", "Overdub", "Screen Recording", "Podcasting Suite"],
+                        investors: "OpenAI Startup Fund, Spark Capital"
+                    },
+                    {
+                        rank: 3,
+                        name: "Suno AI",
+                        subCategory: "Music Generation",
+                        valuation: "$500M",
+                        funding: "$125M",
+                        founded: "2023",
+                        hq: "Cambridge",
+                        users: "10M+ users",
+                        revenue: "-",
+                        website: "suno.com",
+                        summary: "AI 음악 생성. 텍스트로 노래 제작. 보컬+멜로디+가사 통합.",
+                        products: ["Suno V3", "Chirp", "Bark"],
+                        investors: "Lightspeed, Nat Friedman, Daniel Gross"
+                    },
+                    {
+                        rank: 4,
+                        name: "Udio",
+                        subCategory: "Music Generation",
+                        valuation: "-",
+                        funding: "$10M",
+                        founded: "2023",
+                        hq: "New York",
+                        users: "Users",
+                        revenue: "-",
+                        website: "udio.com",
+                        summary: "AI 음악 생성. 고품질 음악 제작. Google DeepMind 출신 창업.",
+                        products: ["Udio Music Generator"],
+                        investors: "a16z"
+                    },
+                    {
+                        rank: 5,
+                        name: "Resemble AI",
+                        subCategory: "Voice Cloning",
+                        valuation: "-",
+                        funding: "$28M",
+                        founded: "2019",
+                        hq: "Toronto, Canada",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "resemble.ai",
+                        summary: "AI 음성 클로닝 및 생성. 기업용 음성 합성.",
+                        products: ["Voice Cloning", "Resemble Fill", "Real-time Voice"],
+                        investors: "Radical Ventures"
+                    },
+                    {
+                        rank: 6,
+                        name: "AIVA",
+                        subCategory: "Music Generation",
+                        valuation: "-",
+                        funding: "-",
+                        founded: "2016",
+                        hq: "Luxembourg",
+                        users: "Composers",
+                        revenue: "-",
+                        website: "aiva.ai",
+                        summary: "AI 작곡 플랫폼. 영화/게임 음악 전문. 클래식 스타일 특화.",
+                        products: ["AIVA Composer", "Emotion-based Composition"],
+                        investors: "-"
+                    }
+                ]
+            },
+            "AI Code/Dev": {
+                color: "#2ed573",
+                totalFunding: "$3B+",
+                avgValuation: "$8B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "Cursor",
+                        subCategory: "Code Editor",
+                        valuation: "$29.3B",
+                        funding: "$2.3B",
+                        founded: "2022",
+                        hq: "San Francisco",
+                        users: "$1B+ ARR",
+                        revenue: "$1B+ ARR",
+                        website: "cursor.com",
+                        summary: "AI 코드 에디터. 가장 빠르게 성장하는 AI 코딩 도구. VS Code 포크 기반.",
+                        products: ["Cursor Editor", "Composer", "Chat", "Cmd+K"],
+                        investors: "Coatue, Accel, Nvidia"
+                    },
+                    {
+                        rank: 2,
+                        name: "Replit",
+                        subCategory: "IDE",
+                        valuation: "$9B",
+                        funding: "$400M",
+                        founded: "2016",
+                        hq: "San Francisco",
+                        users: "30M+ users",
+                        revenue: "-",
+                        website: "replit.com",
+                        summary: "AI 기반 클라우드 IDE. 브라우저에서 코딩. Ghostwriter AI 코파일럿.",
+                        products: ["Replit IDE", "Ghostwriter", "Deployments", "Teams"],
+                        investors: "a16z, Coatue, Y Combinator"
+                    },
+                    {
+                        rank: 3,
+                        name: "Lovable",
+                        subCategory: "No-Code",
+                        valuation: "$6.6B",
+                        funding: "-",
+                        founded: "2023",
+                        hq: "Stockholm, Sweden",
+                        users: "Developers",
+                        revenue: "-",
+                        website: "lovable.dev",
+                        summary: "AI 웹앱 빌더. 유럽 코딩 스타트업. 자연어로 앱 생성.",
+                        products: ["Lovable App Builder"],
+                        investors: "-"
+                    },
+                    {
+                        rank: 4,
+                        name: "Vercel",
+                        subCategory: "Platform",
+                        valuation: "$3.25B",
+                        funding: "$313M",
+                        founded: "2015",
+                        hq: "San Francisco",
+                        users: "Developers",
+                        revenue: "-",
+                        website: "vercel.com",
+                        summary: "AI 기반 웹 개발 플랫폼. Next.js 개발사. v0 AI 코드 생성.",
+                        products: ["Vercel Platform", "v0 (AI)", "Next.js", "Edge Functions"],
+                        investors: "a16z, GV, Bedrock"
+                    },
+                    {
+                        rank: 5,
+                        name: "Sourcegraph",
+                        subCategory: "Code Search",
+                        valuation: "$2.6B",
+                        funding: "$225M",
+                        founded: "2013",
+                        hq: "San Francisco",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "sourcegraph.com",
+                        summary: "AI 코드 검색 및 분석. Cody AI 어시스턴트. 대규모 코드베이스 탐색.",
+                        products: ["Cody AI", "Code Search", "Batch Changes"],
+                        investors: "a16z, Sequoia, Felicis"
+                    },
+                    {
+                        rank: 6,
+                        name: "Cognition AI",
+                        subCategory: "AI Agent",
+                        valuation: "$2B",
+                        funding: "$175M",
+                        founded: "2023",
+                        hq: "San Francisco",
+                        users: "Developers",
+                        revenue: "-",
+                        website: "cognition.ai",
+                        summary: "Devin AI 소프트웨어 엔지니어. 자율 코딩 에이전트. 전체 개발 워크플로우 자동화.",
+                        products: ["Devin"],
+                        investors: "Founders Fund, Khosla Ventures"
+                    },
+                    {
+                        rank: 7,
+                        name: "GitHub Copilot",
+                        subCategory: "Code Assistant",
+                        valuation: "-",
+                        funding: "Microsoft",
+                        founded: "2021",
+                        hq: "San Francisco",
+                        users: "1.8M+ paid",
+                        revenue: "-",
+                        website: "github.com/copilot",
+                        summary: "Microsoft AI 코딩 어시스턴트. OpenAI Codex 기반. VS Code/IDE 통합.",
+                        products: ["Copilot", "Copilot Chat", "Copilot Enterprise"],
+                        investors: "Microsoft"
+                    },
+                    {
+                        rank: 8,
+                        name: "Codeium",
+                        subCategory: "Code Assistant",
+                        valuation: "$1.25B",
+                        funding: "$150M",
+                        founded: "2022",
+                        hq: "Mountain View",
+                        users: "500K+ users",
+                        revenue: "-",
+                        website: "codeium.com",
+                        summary: "무료 AI 코드 자동완성. Copilot 대안. 70+ 언어 지원.",
+                        products: ["Codeium Autocomplete", "Codeium Chat", "Windsurf Editor"],
+                        investors: "Greenoaks Capital"
+                    },
+                    {
+                        rank: 9,
+                        name: "Tabnine",
+                        subCategory: "Code Assistant",
+                        valuation: "-",
+                        funding: "$55M",
+                        founded: "2018",
+                        hq: "Tel Aviv, Israel",
+                        users: "1M+ developers",
+                        revenue: "-",
+                        website: "tabnine.com",
+                        summary: "AI 코드 완성. 기업용 보안 특화. 온프레미스 배포 지원.",
+                        products: ["Tabnine Pro", "Tabnine Enterprise"],
+                        investors: "Khosla Ventures, Telus Ventures"
+                    },
+                    {
+                        rank: 10,
+                        name: "Codium",
+                        subCategory: "Code Testing",
+                        valuation: "-",
+                        funding: "$40M",
+                        founded: "2022",
+                        hq: "Tel Aviv, Israel",
+                        users: "Developers",
+                        revenue: "-",
+                        website: "codium.ai",
+                        summary: "AI 테스트 코드 생성. 자동 유닛 테스트 생성.",
+                        products: ["CodiumAI", "PR-Agent"],
+                        investors: "e.ventures, TLV Partners"
+                    }
+                ]
+            },
+            "AI Search": {
+                color: "#00cec9",
+                totalFunding: "$1.8B+",
+                avgValuation: "$6B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "Perplexity",
+                        subCategory: "Search Engine",
+                        valuation: "$20B",
+                        funding: "$1.5B",
+                        founded: "2022",
+                        hq: "San Francisco",
+                        users: "30M+ users",
+                        revenue: "-",
+                        website: "perplexity.ai",
+                        summary: "AI 검색 엔진. 실시간 웹 검색 + 요약. Google 검색 대안.",
+                        products: ["Perplexity Search", "Perplexity Pro", "Copilot", "API"],
+                        investors: "Nvidia, Jeff Bezos, Sequoia"
+                    },
+                    {
+                        rank: 2,
+                        name: "Glean",
+                        subCategory: "Enterprise Search",
+                        valuation: "$2.2B",
+                        funding: "$200M",
+                        founded: "2019",
+                        hq: "Palo Alto",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "glean.com",
+                        summary: "기업용 AI 검색. 사내 정보 통합 검색. Slack/Notion/Google 연동.",
+                        products: ["Glean Search", "Glean Chat", "Glean Assistant"],
+                        investors: "Sequoia, Kleiner Perkins, General Catalyst"
+                    },
+                    {
+                        rank: 3,
+                        name: "You.com",
+                        subCategory: "Search Engine",
+                        valuation: "$1.5B",
+                        funding: "$99M",
+                        founded: "2020",
+                        hq: "San Francisco",
+                        users: "Users",
+                        revenue: "$50M ARR",
+                        website: "you.com",
+                        summary: "AI 검색 및 에이전트 인프라. 개인화 검색 경험.",
+                        products: ["YouChat", "YouPro", "You.com Search", "YouAgent"],
+                        investors: "Salesforce Ventures, Nvidia"
+                    },
+                    {
+                        rank: 4,
+                        name: "Exa",
+                        subCategory: "Search API",
+                        valuation: "$700M",
+                        funding: "$22M",
+                        founded: "2022",
+                        hq: "San Francisco",
+                        users: "Developers",
+                        revenue: "-",
+                        website: "exa.ai",
+                        summary: "AI 에이전트용 검색 API. 시맨틱 웹 검색 인프라.",
+                        products: ["Exa Search API", "Neural Search"],
+                        investors: "Nvidia, Lightspeed"
+                    }
+                ]
+            },
+            "AI Infrastructure": {
+                color: "#74b9ff",
+                totalFunding: "$20B+",
+                avgValuation: "$10B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "CoreWeave",
+                        subCategory: "Cloud",
+                        valuation: "$35B",
+                        funding: "$15B+",
+                        founded: "2017",
+                        hq: "Roseland",
+                        users: "AI companies",
+                        revenue: "-",
+                        website: "coreweave.com",
+                        summary: "AI 클라우드 컴퓨팅. GPU 인프라 선두. Nvidia GPU 최대 보유.",
+                        products: ["GPU Cloud", "Kubernetes", "Inference", "Training"],
+                        investors: "Nvidia, Magnetar, Coatue"
+                    },
+                    {
+                        rank: 2,
+                        name: "Scale AI",
+                        subCategory: "Data",
+                        valuation: "$29B",
+                        funding: "$14.3B",
+                        founded: "2016",
+                        hq: "San Francisco",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "scale.com",
+                        summary: "AI 데이터 라벨링 및 인프라. 미국 정부/군 계약.",
+                        products: ["Scale Data Engine", "Scale Generative AI", "Scale Donovan (Defense)"],
+                        investors: "Meta, Thrive Capital, Tiger Global"
+                    },
+                    {
+                        rank: 3,
+                        name: "Hugging Face",
+                        subCategory: "Model Hub",
+                        valuation: "$4.5B",
+                        funding: "$235M",
+                        founded: "2016",
+                        hq: "New York",
+                        users: "50K+ orgs",
+                        revenue: "$130M ARR",
+                        website: "huggingface.co",
+                        summary: "AI 모델 허브 및 커뮤니티. 오픈소스 ML의 GitHub.",
+                        products: ["Hub", "Transformers", "Datasets", "Spaces", "Inference API"],
+                        investors: "Salesforce, Nvidia, Google, Amazon"
+                    },
+                    {
+                        rank: 4,
+                        name: "Together AI",
+                        subCategory: "Compute",
+                        valuation: "$1.25B",
+                        funding: "$106M",
+                        founded: "2022",
+                        hq: "San Francisco",
+                        users: "Developers",
+                        revenue: "-",
+                        website: "together.ai",
+                        summary: "오픈소스 AI 모델 인프라. 분산 컴퓨팅 플랫폼.",
+                        products: ["Together Inference", "Together Fine-tuning", "Together API"],
+                        investors: "Nvidia, Salesforce, Kleiner Perkins"
+                    },
+                    {
+                        rank: 5,
+                        name: "LangChain",
+                        subCategory: "Framework",
+                        valuation: "$1.25B",
+                        funding: "$260M",
+                        founded: "2022",
+                        hq: "San Francisco",
+                        users: "35% Fortune 500",
+                        revenue: "$16M ARR",
+                        website: "langchain.com",
+                        summary: "LLM 앱 개발 프레임워크. 프롬프트 체이닝, 에이전트 개발.",
+                        products: ["LangChain", "LangSmith", "LangGraph", "LangServe"],
+                        investors: "Sequoia, Benchmark, IVP"
+                    },
+                    {
+                        rank: 6,
+                        name: "Weights & Biases",
+                        subCategory: "MLOps",
+                        valuation: "$1.25B",
+                        funding: "$200M",
+                        founded: "2017",
+                        hq: "San Francisco",
+                        users: "OpenAI, Anthropic",
+                        revenue: "-",
+                        website: "wandb.ai",
+                        summary: "MLOps 플랫폼. 실험 추적, 모델 관리. CoreWeave 인수.",
+                        products: ["Experiments", "Sweeps", "Artifacts", "Tables", "Reports"],
+                        investors: "NEA, Insight Partners"
+                    },
+                    {
+                        rank: 7,
+                        name: "Anyscale",
+                        subCategory: "Compute",
+                        valuation: "$1B",
+                        funding: "$259M",
+                        founded: "2019",
+                        hq: "San Francisco",
+                        users: "OpenAI, Uber",
+                        revenue: "-",
+                        website: "anyscale.com",
+                        summary: "Ray 오픈소스 AI 인프라. 분산 컴퓨팅 프레임워크.",
+                        products: ["Anyscale Platform", "Ray", "Ray Serve"],
+                        investors: "a16z, NEA, Addition"
+                    },
+                    {
+                        rank: 8,
+                        name: "Labelbox",
+                        subCategory: "Data Labeling",
+                        valuation: "$1B",
+                        funding: "$188M",
+                        founded: "2018",
+                        hq: "San Francisco",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "labelbox.com",
+                        summary: "AI 데이터 라벨링 플랫폼. 이미지/비디오/텍스트 어노테이션.",
+                        products: ["Labelbox Annotate", "Labelbox Model", "Labelbox Catalog"],
+                        investors: "a16z, Google, SoftBank"
+                    },
+                    {
+                        rank: 9,
+                        name: "Pinecone",
+                        subCategory: "Vector DB",
+                        valuation: "$750M",
+                        funding: "$138M",
+                        founded: "2019",
+                        hq: "San Francisco",
+                        users: "10K+ companies",
+                        revenue: "-",
+                        website: "pinecone.io",
+                        summary: "벡터 데이터베이스. AI 검색 인프라. RAG 필수 인프라.",
+                        products: ["Pinecone DB", "Serverless", "Pods"],
+                        investors: "a16z, Menlo Ventures, Wing VC"
+                    },
+                    {
+                        rank: 10,
+                        name: "Fireworks AI",
+                        subCategory: "Inference",
+                        valuation: "$552M",
+                        funding: "$77M",
+                        founded: "2022",
+                        hq: "Redwood City",
+                        users: "Developers",
+                        revenue: "-",
+                        website: "fireworks.ai",
+                        summary: "AI 모델 배포 및 추론. 빠른 추론 최적화.",
+                        products: ["Fireworks API", "FireFunction", "FireAttention"],
+                        investors: "a16z, Sequoia, Benchmark"
+                    }
+                ]
+            },
+            "AI Data/Analytics": {
+                color: "#e17055",
+                totalFunding: "$12B+",
+                avgValuation: "$30B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "Databricks",
+                        subCategory: "Data Platform",
+                        valuation: "$138B",
+                        funding: "$10B+",
+                        founded: "2013",
+                        hq: "San Francisco",
+                        users: "10K+ customers",
+                        revenue: "$4.8B ARR",
+                        website: "databricks.com",
+                        summary: "데이터 + AI 통합 플랫폼. Lakehouse 아키텍처. Apache Spark 창시자 설립.",
+                        products: ["Lakehouse", "Delta Lake", "MLflow", "Mosaic AI", "Unity Catalog"],
+                        investors: "a16z, Thrive, T. Rowe Price"
+                    },
+                    {
+                        rank: 2,
+                        name: "Snowflake",
+                        subCategory: "Data Warehouse",
+                        valuation: "$75B (public)",
+                        funding: "$1.4B",
+                        founded: "2012",
+                        hq: "Bozeman",
+                        users: "10K+ customers",
+                        revenue: "$3.4B ARR",
+                        website: "snowflake.com",
+                        summary: "클라우드 데이터 웨어하우스. 데이터 공유 마켓플레이스.",
+                        products: ["Snowflake Data Cloud", "Snowpark", "Cortex AI", "Data Marketplace"],
+                        investors: "Sequoia, Sutter Hill (IPO 2020)"
+                    },
+                    {
+                        rank: 3,
+                        name: "Fivetran",
+                        subCategory: "Data Integration",
+                        valuation: "$5.6B",
+                        funding: "$565M",
+                        founded: "2012",
+                        hq: "Oakland",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "fivetran.com",
+                        summary: "데이터 통합 및 ETL. 500+ 커넥터. 자동화된 데이터 파이프라인.",
+                        products: ["Fivetran Connectors", "Transformations", "HVR"],
+                        investors: "a16z, General Catalyst, ICONIQ"
+                    },
+                    {
+                        rank: 4,
+                        name: "dbt Labs",
+                        subCategory: "Data Transform",
+                        valuation: "$4.2B",
+                        funding: "$414M",
+                        founded: "2016",
+                        hq: "Philadelphia",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "getdbt.com",
+                        summary: "데이터 변환 플랫폼. SQL 기반 Analytics Engineering.",
+                        products: ["dbt Core", "dbt Cloud", "dbt Mesh", "Semantic Layer"],
+                        investors: "a16z, Sequoia, Altimeter"
+                    },
+                    {
+                        rank: 5,
+                        name: "Monte Carlo",
+                        subCategory: "Data Quality",
+                        valuation: "$1.6B",
+                        funding: "$236M",
+                        founded: "2019",
+                        hq: "San Francisco",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "montecarlodata.com",
+                        summary: "데이터 옵저버빌리티. 데이터 품질 자동 모니터링.",
+                        products: ["Data Observability Platform", "Data Reliability"],
+                        investors: "Accel, GGV, ICONIQ"
+                    }
+                ]
+            },
+            "AI Healthcare": {
+                color: "#fd79a8",
+                totalFunding: "$5B+",
+                avgValuation: "$3B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "Tempus",
+                        subCategory: "Precision Medicine",
+                        valuation: "$8.1B",
+                        funding: "$1.3B",
+                        founded: "2015",
+                        hq: "Chicago",
+                        users: "Providers",
+                        revenue: "-",
+                        website: "tempus.com",
+                        summary: "AI 정밀 의료 플랫폼. 유전체 분석, 암 진단 최적화.",
+                        products: ["Tempus xT", "Tempus xF", "Tempus xG", "TIME Trial Network"],
+                        investors: "NEA, Google, New Enterprise Associates"
+                    },
+                    {
+                        rank: 2,
+                        name: "Abridge",
+                        subCategory: "Medical Records",
+                        valuation: "$5.3B",
+                        funding: "$550M",
+                        founded: "2018",
+                        hq: "Pittsburgh",
+                        users: "Health systems",
+                        revenue: "-",
+                        website: "abridge.com",
+                        summary: "AI 의료 기록 자동화. 진료 대화 → 의료 기록 변환.",
+                        products: ["Abridge for Clinicians", "Abridge for Patients"],
+                        investors: "Lightspeed, CVS Health, Spark Capital"
+                    },
+                    {
+                        rank: 3,
+                        name: "Recursion",
+                        subCategory: "Drug Discovery",
+                        valuation: "$4B (public)",
+                        funding: "$966M",
+                        founded: "2013",
+                        hq: "Salt Lake City",
+                        users: "Pharma partners",
+                        revenue: "-",
+                        website: "recursion.com",
+                        summary: "AI 신약 개발. 세포 이미지 분석 기반 신약 후보 발굴.",
+                        products: ["Recursion OS", "LOWE Platform"],
+                        investors: "a16z, SoftBank (IPO 2021)"
+                    },
+                    {
+                        rank: 4,
+                        name: "Xaira Therapeutics",
+                        subCategory: "Drug Discovery",
+                        valuation: "$2.7B",
+                        funding: "$1B",
+                        founded: "2024",
+                        hq: "San Francisco",
+                        users: "-",
+                        revenue: "-",
+                        website: "xaira.com",
+                        summary: "AI 신약 발견 스타트업. 역대 최대 시드 펀딩.",
+                        products: ["AI Drug Discovery Platform"],
+                        investors: "ARCH Venture, Foresite Capital"
+                    },
+                    {
+                        rank: 5,
+                        name: "Insitro",
+                        subCategory: "Drug Discovery",
+                        valuation: "$2.5B",
+                        funding: "$743M",
+                        founded: "2018",
+                        hq: "South San Francisco",
+                        users: "Pharma partners",
+                        revenue: "-",
+                        website: "insitro.com",
+                        summary: "AI 신약 개발. 머신러닝 기반 신약 타겟 발굴.",
+                        products: ["insitro Human (ISH)", "insitro Cell (ISC)"],
+                        investors: "a16z, GV, Gilead"
+                    },
+                    {
+                        rank: 6,
+                        name: "K Health",
+                        subCategory: "Telehealth",
+                        valuation: "$1.5B",
+                        funding: "$271M",
+                        founded: "2016",
+                        hq: "New York",
+                        users: "10M+ users",
+                        revenue: "-",
+                        website: "khealth.com",
+                        summary: "AI 1차 진료 플랫폼. 증상 체커 + 원격 진료.",
+                        products: ["K Health App", "K for Business"],
+                        investors: "14W, Valor Equity"
+                    },
+                    {
+                        rank: 7,
+                        name: "Paige",
+                        subCategory: "Diagnostics",
+                        valuation: "$1.4B",
+                        funding: "$220M",
+                        founded: "2017",
+                        hq: "New York",
+                        users: "Hospitals",
+                        revenue: "-",
+                        website: "paige.ai",
+                        summary: "AI 암 진단 병리학. FDA 승인 AI 병리 솔루션.",
+                        products: ["Paige Prostate", "Paige Breast", "FullFocus"],
+                        investors: "General Atlantic, Goldman Sachs"
+                    },
+                    {
+                        rank: 8,
+                        name: "PathAI",
+                        subCategory: "Diagnostics",
+                        valuation: "$1.25B",
+                        funding: "$255M",
+                        founded: "2016",
+                        hq: "Boston",
+                        users: "Labs",
+                        revenue: "-",
+                        website: "pathai.com",
+                        summary: "AI 병리학 진단. 조직 이미지 분석.",
+                        products: ["PathAI Diagnostics", "AIM-NASH", "PathExplore"],
+                        investors: "General Atlantic, Tiger Global"
+                    },
+                    {
+                        rank: 9,
+                        name: "Viz.ai",
+                        subCategory: "Diagnostics",
+                        valuation: "$1.2B",
+                        funding: "$250M",
+                        founded: "2016",
+                        hq: "San Francisco",
+                        users: "1.3K+ hospitals",
+                        revenue: "-",
+                        website: "viz.ai",
+                        summary: "AI 뇌졸중 진단. 실시간 CT 분석 알림.",
+                        products: ["Viz LVO", "Viz PE", "Viz Aortic"],
+                        investors: "Insight Partners, Tiger Global"
+                    },
+                    {
+                        rank: 10,
+                        name: "Insilico Medicine",
+                        subCategory: "Drug Discovery",
+                        valuation: "$900M",
+                        funding: "$407M",
+                        founded: "2014",
+                        hq: "Hong Kong",
+                        users: "Pharma partners",
+                        revenue: "-",
+                        website: "insilico.com",
+                        summary: "AI 기반 신약 개발. Chemistry42, PandaOmics.",
+                        products: ["Pharma.AI", "Chemistry42", "PandaOmics", "InClinico"],
+                        investors: "Qiming, Sequoia China"
+                    }
+                ]
+            },
+            "AI Enterprise": {
+                color: "#a29bfe",
+                totalFunding: "$3B+",
+                avgValuation: "$5B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "Grammarly",
+                        subCategory: "Writing",
+                        valuation: "$13B",
+                        funding: "$400M",
+                        founded: "2009",
+                        hq: "San Francisco",
+                        users: "30M+ daily users",
+                        revenue: "-",
+                        website: "grammarly.com",
+                        summary: "AI 글쓰기 어시스턴트. 문법/스타일 교정. 70K+ 기업 사용.",
+                        products: ["Grammarly Free", "Grammarly Premium", "Grammarly Business", "GrammarlyGO"],
+                        investors: "Baillie Gifford, IVP, General Catalyst"
+                    },
+                    {
+                        rank: 2,
+                        name: "Notion AI",
+                        subCategory: "Productivity",
+                        valuation: "$10B",
+                        funding: "$343M",
+                        founded: "2013",
+                        hq: "San Francisco",
+                        users: "100M+ users",
+                        revenue: "-",
+                        website: "notion.so",
+                        summary: "Notion 내장 AI 어시스턴트. 문서 요약, 글쓰기 지원.",
+                        products: ["Notion", "Notion AI", "Notion Calendar"],
+                        investors: "Sequoia, Index Ventures, Coatue"
+                    },
+                    {
+                        rank: 3,
+                        name: "Gong",
+                        subCategory: "Sales",
+                        valuation: "$7.25B",
+                        funding: "$584M",
+                        founded: "2015",
+                        hq: "San Francisco",
+                        users: "4K+ customers",
+                        revenue: "-",
+                        website: "gong.io",
+                        summary: "AI 영업 인텔리전스. 통화 분석, 딜 예측.",
+                        products: ["Gong Revenue Intelligence", "Gong Engage", "Gong Forecast"],
+                        investors: "Sequoia, Coatue, Tiger Global"
+                    },
+                    {
+                        rank: 4,
+                        name: "Sierra",
+                        subCategory: "Customer Service",
+                        valuation: "$4.5B",
+                        funding: "$175M",
+                        founded: "2023",
+                        hq: "San Francisco",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "sierra.ai",
+                        summary: "AI 고객 서비스 챗봇. Salesforce/Google 출신 창업.",
+                        products: ["Sierra Agent"],
+                        investors: "Sequoia, Benchmark"
+                    },
+                    {
+                        rank: 5,
+                        name: "Outreach",
+                        subCategory: "Sales",
+                        valuation: "$4.4B",
+                        funding: "$489M",
+                        founded: "2014",
+                        hq: "Seattle",
+                        users: "6K+ customers",
+                        revenue: "-",
+                        website: "outreach.io",
+                        summary: "AI 영업 자동화 플랫폼. 시퀀스 자동화, AI 분석.",
+                        products: ["Outreach Sales Execution", "Outreach Kaia", "Outreach Commit"],
+                        investors: "Sapphire, DFJ, Meritech"
+                    },
+                    {
+                        rank: 6,
+                        name: "Clari",
+                        subCategory: "Sales",
+                        valuation: "$2.6B",
+                        funding: "$496M",
+                        founded: "2012",
+                        hq: "Sunnyvale",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "clari.com",
+                        summary: "AI 매출 예측 플랫폼. 파이프라인 분석.",
+                        products: ["Clari Revenue Platform", "Clari Copilot"],
+                        investors: "Sequoia, a16z, Bain Capital"
+                    },
+                    {
+                        rank: 7,
+                        name: "Jasper",
+                        subCategory: "Marketing",
+                        valuation: "$1.5B",
+                        funding: "$131M",
+                        founded: "2021",
+                        hq: "Austin",
+                        users: "105K+ customers",
+                        revenue: "$55M ARR",
+                        website: "jasper.ai",
+                        summary: "AI 마케팅 콘텐츠 생성. 브랜드 보이스 학습.",
+                        products: ["Jasper Chat", "Jasper Art", "Jasper for Business"],
+                        investors: "Insight Partners, Coatue, IVP"
+                    },
+                    {
+                        rank: 8,
+                        name: "Ada",
+                        subCategory: "Customer Service",
+                        valuation: "$1.2B",
+                        funding: "$190M",
+                        founded: "2016",
+                        hq: "Toronto, Canada",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "ada.cx",
+                        summary: "AI 고객 서비스 자동화. 다국어 지원.",
+                        products: ["Ada AI Agent", "Ada Voice"],
+                        investors: "Accel, Spark Capital, Bessemer"
+                    },
+                    {
+                        rank: 9,
+                        name: "Intercom",
+                        subCategory: "Customer Service",
+                        valuation: "$1.2B",
+                        funding: "$241M",
+                        founded: "2011",
+                        hq: "San Francisco",
+                        users: "25K+ customers",
+                        revenue: "-",
+                        website: "intercom.com",
+                        summary: "AI 고객 서비스 플랫폼. Fin AI 챗봇.",
+                        products: ["Intercom Messenger", "Fin AI", "Inbox", "Articles"],
+                        investors: "Kleiner Perkins, Index Ventures"
+                    },
+                    {
+                        rank: 10,
+                        name: "People.ai",
+                        subCategory: "Sales",
+                        valuation: "$1.1B",
+                        funding: "$200M",
+                        founded: "2016",
+                        hq: "San Francisco",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "people.ai",
+                        summary: "AI 영업 효율화. 활동 캡처 및 분석.",
+                        products: ["People.ai Revenue Intelligence"],
+                        investors: "Lightspeed, Thrive Capital, ICONIQ"
+                    }
+                ]
+            },
+            "AI Creative": {
+                color: "#fdcb6e",
+                totalFunding: "$1B+",
+                avgValuation: "$15B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "Canva",
+                        subCategory: "Design",
+                        valuation: "$40B",
+                        funding: "$570M",
+                        founded: "2012",
+                        hq: "Sydney, Australia",
+                        users: "185M+ users",
+                        revenue: "$2.3B ARR",
+                        website: "canva.com",
+                        summary: "AI 디자인 플랫폼. Magic Studio AI 도구. 비디자이너용.",
+                        products: ["Canva Design", "Magic Studio", "Magic Write", "Magic Edit", "Docs"],
+                        investors: "Sequoia, Felicis, T. Rowe Price"
+                    },
+                    {
+                        rank: 2,
+                        name: "Figma",
+                        subCategory: "Design",
+                        valuation: "$12.5B",
+                        funding: "$333M",
+                        founded: "2012",
+                        hq: "San Francisco",
+                        users: "Designers",
+                        revenue: "-",
+                        website: "figma.com",
+                        summary: "AI 디자인 협업 도구. FigJam AI. 실시간 협업.",
+                        products: ["Figma Design", "FigJam", "Dev Mode", "Figma AI"],
+                        investors: "a16z, Greylock, Index Ventures"
+                    },
+                    {
+                        rank: 3,
+                        name: "Synthesia",
+                        subCategory: "Video",
+                        valuation: "$1B",
+                        funding: "$157M",
+                        founded: "2017",
+                        hq: "London, UK",
+                        users: "50K+ customers",
+                        revenue: "-",
+                        website: "synthesia.io",
+                        summary: "AI 아바타 비디오 생성. 텍스트 → 비디오 변환.",
+                        products: ["Synthesia Studio", "AI Avatars", "AI Voice"],
+                        investors: "Kleiner Perkins, Accel, GV"
+                    },
+                    {
+                        rank: 4,
+                        name: "Typeface",
+                        subCategory: "Content",
+                        valuation: "$1B",
+                        funding: "$165M",
+                        founded: "2022",
+                        hq: "San Francisco",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "typeface.ai",
+                        summary: "기업용 AI 콘텐츠 플랫폼. 브랜드 일관성 유지.",
+                        products: ["Typeface Studio", "Brand Kit", "Content Hub"],
+                        investors: "Lightspeed, GV, Menlo Ventures"
+                    },
+                    {
+                        rank: 5,
+                        name: "Tome",
+                        subCategory: "Presentation",
+                        valuation: "$600M",
+                        funding: "$81M",
+                        founded: "2020",
+                        hq: "San Francisco",
+                        users: "Users",
+                        revenue: "-",
+                        website: "tome.app",
+                        summary: "AI 프레젠테이션 생성. 스토리텔링 포맷.",
+                        products: ["Tome AI", "Tome Templates"],
+                        investors: "Greylock, Lightspeed"
+                    },
+                    {
+                        rank: 6,
+                        name: "HeyGen",
+                        subCategory: "Video",
+                        valuation: "$500M",
+                        funding: "$60M",
+                        founded: "2020",
+                        hq: "Los Angeles",
+                        users: "300K+ users",
+                        revenue: "-",
+                        website: "heygen.com",
+                        summary: "AI 아바타 비디오 생성. 다국어 더빙.",
+                        products: ["HeyGen Avatar", "Video Translate", "Instant Avatar"],
+                        investors: "Benchmark, Thrive Capital"
+                    },
+                    {
+                        rank: 7,
+                        name: "Photoroom",
+                        subCategory: "Photo Editing",
+                        valuation: "$500M",
+                        funding: "$65M",
+                        founded: "2019",
+                        hq: "Paris, France",
+                        users: "150M+ downloads",
+                        revenue: "-",
+                        website: "photoroom.com",
+                        summary: "AI 배경 제거 및 이미지 편집. 이커머스 특화.",
+                        products: ["Background Remover", "AI Photo Editor", "Batch Mode"],
+                        investors: "Balderton, Spark Capital"
+                    },
+                    {
+                        rank: 8,
+                        name: "D-ID",
+                        subCategory: "Video",
+                        valuation: "$150M",
+                        funding: "$48M",
+                        founded: "2017",
+                        hq: "Tel Aviv, Israel",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "d-id.com",
+                        summary: "AI 디지털 휴먼 및 아바타. 사진 애니메이션.",
+                        products: ["Creative Reality Studio", "Speaking Portrait", "Live Portrait"],
+                        investors: "Pitango, Macquarie"
+                    }
+                ]
+            },
+            "AI Legal": {
+                color: "#00b894",
+                totalFunding: "$900M+",
+                avgValuation: "$3B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "Harvey",
+                        subCategory: "Legal Research",
+                        valuation: "$8B",
+                        funding: "$806M",
+                        founded: "2022",
+                        hq: "San Francisco",
+                        users: "Law firms",
+                        revenue: "-",
+                        website: "harvey.ai",
+                        summary: "AI 법률 어시스턴트. 법률 문서 분석, 리서치 자동화.",
+                        products: ["Harvey for Litigation", "Harvey for Transactions", "Harvey for Regulatory"],
+                        investors: "Sequoia, OpenAI, Kleiner Perkins"
+                    },
+                    {
+                        rank: 2,
+                        name: "Casetext",
+                        subCategory: "Legal Research",
+                        valuation: "$650M (인수)",
+                        funding: "Acquired",
+                        founded: "2013",
+                        hq: "San Francisco",
+                        users: "Lawyers",
+                        revenue: "-",
+                        website: "casetext.com",
+                        summary: "AI 법률 리서치. Thomson Reuters에 인수됨.",
+                        products: ["CoCounsel", "Parallel Search"],
+                        investors: "Thomson Reuters (acquired)"
+                    },
+                    {
+                        rank: 3,
+                        name: "Eve",
+                        subCategory: "Legal Research",
+                        valuation: "-",
+                        funding: "$47M",
+                        founded: "2023",
+                        hq: "San Francisco",
+                        users: "Lawyers",
+                        revenue: "-",
+                        website: "eve.legal",
+                        summary: "AI 법률 연구 플랫폼. 판례 분석 자동화.",
+                        products: ["Eve Legal Research"],
+                        investors: "a16z"
+                    },
+                    {
+                        rank: 4,
+                        name: "Robin AI",
+                        subCategory: "Contract",
+                        valuation: "-",
+                        funding: "$33M",
+                        founded: "2019",
+                        hq: "London, UK",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "robinai.com",
+                        summary: "AI 계약서 분석. 계약 검토 자동화.",
+                        products: ["Robin Contract Review", "Robin Draft"],
+                        investors: "Temasek, Dawn Capital"
+                    },
+                    {
+                        rank: 5,
+                        name: "Spellbook",
+                        subCategory: "Contract",
+                        valuation: "-",
+                        funding: "$21M",
+                        founded: "2020",
+                        hq: "Toronto, Canada",
+                        users: "Lawyers",
+                        revenue: "-",
+                        website: "spellbook.legal",
+                        summary: "AI 계약서 검토 및 작성. Word 통합.",
+                        products: ["Spellbook for Word"],
+                        investors: "Moxxie Ventures, Gradient Ventures"
+                    }
+                ]
+            },
+            "AI Autonomous": {
+                color: "#6c5ce7",
+                totalFunding: "$20B+",
+                avgValuation: "$5B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "Waymo",
+                        subCategory: "Robotaxi",
+                        valuation: "-",
+                        funding: "$5.6B",
+                        founded: "2009",
+                        hq: "Mountain View",
+                        users: "100K rides/week",
+                        revenue: "-",
+                        website: "waymo.com",
+                        summary: "자율주행 1위. Alphabet 자회사. 샌프란시스코/피닉스 상업 운행.",
+                        products: ["Waymo One (Robotaxi)", "Waymo Via (Trucking)", "Waymo Driver"],
+                        investors: "Alphabet, a16z, Tiger Global"
+                    },
+                    {
+                        rank: 2,
+                        name: "Nuro",
+                        subCategory: "Delivery",
+                        valuation: "$8.6B",
+                        funding: "$2.1B",
+                        founded: "2016",
+                        hq: "Mountain View",
+                        users: "Partners",
+                        revenue: "-",
+                        website: "nuro.ai",
+                        summary: "자율주행 배송 로봇. 무인 배송 차량.",
+                        products: ["Nuro R3", "Nuro Delivery"],
+                        investors: "SoftBank, Google, Greylock"
+                    },
+                    {
+                        rank: 3,
+                        name: "Aurora",
+                        subCategory: "Trucking",
+                        valuation: "$4.3B (public)",
+                        funding: "$1B",
+                        founded: "2017",
+                        hq: "Pittsburgh",
+                        users: "FedEx partner",
+                        revenue: "-",
+                        website: "aurora.tech",
+                        summary: "자율주행 트럭 1위. 화물 운송 자동화.",
+                        products: ["Aurora Driver", "Aurora Horizon"],
+                        investors: "Sequoia, Amazon, Uber (IPO 2021)"
+                    },
+                    {
+                        rank: 4,
+                        name: "Wayve",
+                        subCategory: "Self-Driving",
+                        valuation: "-",
+                        funding: "$1.05B",
+                        founded: "2017",
+                        hq: "London, UK",
+                        users: "-",
+                        revenue: "-",
+                        website: "wayve.ai",
+                        summary: "영국 자율주행 AI. 엔드투엔드 딥러닝 방식.",
+                        products: ["LINGO-2", "Wayve AV2.0"],
+                        investors: "SoftBank, Microsoft, Nvidia"
+                    },
+                    {
+                        rank: 5,
+                        name: "Zoox",
+                        subCategory: "Robotaxi",
+                        valuation: "$1.2B (인수)",
+                        funding: "Acquired",
+                        founded: "2014",
+                        hq: "Foster City",
+                        users: "-",
+                        revenue: "-",
+                        website: "zoox.com",
+                        summary: "Amazon 자율주행 로보택시. 양방향 차량 설계.",
+                        products: ["Zoox Robotaxi"],
+                        investors: "Amazon (acquired 2020)"
+                    },
+                    {
+                        rank: 6,
+                        name: "Cruise",
+                        subCategory: "Robotaxi",
+                        valuation: "-",
+                        funding: "$10B",
+                        founded: "2013",
+                        hq: "San Francisco",
+                        users: "-",
+                        revenue: "-",
+                        website: "getcruise.com",
+                        summary: "GM 자율주행. 2023년 사고 후 운영 중단.",
+                        products: ["Cruise Origin"],
+                        investors: "GM, SoftBank, Honda"
+                    }
+                ]
+            },
+            "AI Robotics": {
+                color: "#e84393",
+                totalFunding: "$1.5B+",
+                avgValuation: "$2B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "Figure AI",
+                        subCategory: "Humanoid",
+                        valuation: "$2.6B",
+                        funding: "$754M",
+                        founded: "2022",
+                        hq: "Sunnyvale",
+                        users: "BMW partner",
+                        revenue: "-",
+                        website: "figure.ai",
+                        summary: "휴머노이드 로봇 선두. Figure 01/02 로봇. OpenAI 파트너십.",
+                        products: ["Figure 01", "Figure 02"],
+                        investors: "Microsoft, OpenAI, Nvidia, Bezos Expeditions"
+                    },
+                    {
+                        rank: 2,
+                        name: "Agility Robotics",
+                        subCategory: "Humanoid",
+                        valuation: "-",
+                        funding: "$177M",
+                        founded: "2015",
+                        hq: "Corvallis",
+                        users: "Amazon partner",
+                        revenue: "-",
+                        website: "agilityrobotics.com",
+                        summary: "Digit 휴머노이드 로봇. 물류 창고 작업 특화.",
+                        products: ["Digit"],
+                        investors: "DCVC, Playground Global, Amazon"
+                    },
+                    {
+                        rank: 3,
+                        name: "Sanctuary AI",
+                        subCategory: "Humanoid",
+                        valuation: "-",
+                        funding: "$140M",
+                        founded: "2018",
+                        hq: "Vancouver, Canada",
+                        users: "-",
+                        revenue: "-",
+                        website: "sanctuary.ai",
+                        summary: "AI 휴머노이드 로봇. Phoenix 로봇.",
+                        products: ["Phoenix"],
+                        investors: "Accel, SE Ventures, Bell Ventures"
+                    },
+                    {
+                        rank: 4,
+                        name: "1X Technologies",
+                        subCategory: "Humanoid",
+                        valuation: "-",
+                        funding: "$125M",
+                        founded: "2014",
+                        hq: "Moss, Norway",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "1x.tech",
+                        summary: "휴머노이드 로봇. 노르웨이 기반. NEO 로봇.",
+                        products: ["EVE", "NEO"],
+                        investors: "OpenAI, Tiger Global, Samsung"
+                    },
+                    {
+                        rank: 5,
+                        name: "Boston Dynamics",
+                        subCategory: "Industrial",
+                        valuation: "-",
+                        funding: "$100M+",
+                        founded: "1992",
+                        hq: "Waltham",
+                        users: "-",
+                        revenue: "-",
+                        website: "bostondynamics.com",
+                        summary: "로봇 기술 선두. Hyundai 자회사. Spot/Atlas 로봇.",
+                        products: ["Spot", "Atlas", "Stretch"],
+                        investors: "Hyundai (owner)"
+                    },
+                    {
+                        rank: 6,
+                        name: "Apptronik",
+                        subCategory: "Humanoid",
+                        valuation: "-",
+                        funding: "$25M",
+                        founded: "2016",
+                        hq: "Austin",
+                        users: "-",
+                        revenue: "-",
+                        website: "apptronik.com",
+                        summary: "휴머노이드 로봇 Apollo. NASA/UT Austin 스핀오프.",
+                        products: ["Apollo"],
+                        investors: "Google Ventures, Capital Factory"
+                    }
+                ]
+            },
+            "AI Chips": {
+                color: "#00cec9",
+                totalFunding: "$5B+",
+                avgValuation: "$100B+",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "Nvidia",
+                        subCategory: "GPU",
+                        valuation: "$3.3T (public)",
+                        funding: "Public",
+                        founded: "1993",
+                        hq: "Santa Clara",
+                        users: "AI industry",
+                        revenue: "$130B",
+                        website: "nvidia.com",
+                        summary: "AI 칩 및 GPU 지배자. H100/H200/Blackwell. AI 인프라 필수.",
+                        products: ["H100", "H200", "Blackwell", "CUDA", "TensorRT", "DGX"],
+                        investors: "Public (IPO 1999)"
+                    },
+                    {
+                        rank: 2,
+                        name: "AMD",
+                        subCategory: "GPU",
+                        valuation: "$180B (public)",
+                        funding: "Public",
+                        founded: "1969",
+                        hq: "Santa Clara",
+                        users: "Enterprise",
+                        revenue: "$23B",
+                        website: "amd.com",
+                        summary: "AI 및 데이터센터 칩. MI300X GPU. Nvidia 대안.",
+                        products: ["MI300X", "Instinct", "EPYC", "ROCm"],
+                        investors: "Public"
+                    },
+                    {
+                        rank: 3,
+                        name: "Intel",
+                        subCategory: "CPU/AI",
+                        valuation: "$90B (public)",
+                        funding: "Public",
+                        founded: "1968",
+                        hq: "Santa Clara",
+                        users: "Enterprise",
+                        revenue: "$54B",
+                        website: "intel.com",
+                        summary: "AI 칩 및 프로세서. Gaudi AI 가속기.",
+                        products: ["Gaudi 3", "Xeon", "Core Ultra", "Arc"],
+                        investors: "Public"
+                    },
+                    {
+                        rank: 4,
+                        name: "Groq",
+                        subCategory: "Inference",
+                        valuation: "$6.9B",
+                        funding: "$750M",
+                        founded: "2016",
+                        hq: "Mountain View",
+                        users: "AI companies",
+                        revenue: "-",
+                        website: "groq.com",
+                        summary: "AI 추론 칩 LPU. 초고속 추론. 2025년 Nvidia 인수 계획.",
+                        products: ["LPU", "GroqCloud", "GroqChip"],
+                        investors: "Nvidia (2025), Tiger Global, D1 Capital"
+                    },
+                    {
+                        rank: 5,
+                        name: "SambaNova",
+                        subCategory: "Full Stack",
+                        valuation: "$5.1B",
+                        funding: "$1.1B",
+                        founded: "2017",
+                        hq: "Palo Alto",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "sambanova.ai",
+                        summary: "기업용 AI 칩 및 플랫폼. DataScale 시스템.",
+                        products: ["SN40L", "DataScale", "SambaStudio"],
+                        investors: "SoftBank, BlackRock, Intel Capital"
+                    },
+                    {
+                        rank: 6,
+                        name: "Graphcore",
+                        subCategory: "Accelerator",
+                        valuation: "$2.77B",
+                        funding: "$710M",
+                        founded: "2016",
+                        hq: "Bristol, UK",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "graphcore.ai",
+                        summary: "AI 가속기 IPU. 영국 AI 칩 스타트업.",
+                        products: ["Bow IPU", "Poplar SDK"],
+                        investors: "Microsoft, Dell, Samsung"
+                    },
+                    {
+                        rank: 7,
+                        name: "Cerebras",
+                        subCategory: "Training",
+                        valuation: "-",
+                        funding: "$1.1B",
+                        founded: "2016",
+                        hq: "Sunnyvale",
+                        users: "OpenAI partner",
+                        revenue: "-",
+                        website: "cerebras.net",
+                        summary: "웨이퍼 스케일 AI 칩. 세계 최대 칩.",
+                        products: ["CS-3", "WSE-3", "Cerebras Cloud"],
+                        investors: "a16z, Benchmark, Eclipse"
+                    },
+                    {
+                        rank: 8,
+                        name: "Tenstorrent",
+                        subCategory: "Accelerator",
+                        valuation: "$1B+",
+                        funding: "$370M",
+                        founded: "2016",
+                        hq: "Santa Clara",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "tenstorrent.com",
+                        summary: "AI 칩 설계. Jim Keller (AMD/Apple 출신) 주도.",
+                        products: ["Wormhole", "Grayskull", "RISC-V"],
+                        investors: "Hyundai, Samsung, LG"
+                    },
+                    {
+                        rank: 9,
+                        name: "Hailo",
+                        subCategory: "Edge AI",
+                        valuation: "$1B",
+                        funding: "$224M",
+                        founded: "2017",
+                        hq: "Tel Aviv, Israel",
+                        users: "Automotive",
+                        revenue: "-",
+                        website: "hailo.ai",
+                        summary: "엣지 AI 칩. 자동차/IoT 특화.",
+                        products: ["Hailo-8", "Hailo-10"],
+                        investors: "Gil Ventures, NEC, ABB"
+                    },
+                    {
+                        rank: 10,
+                        name: "d-Matrix",
+                        subCategory: "Inference",
+                        valuation: "-",
+                        funding: "$160M",
+                        founded: "2019",
+                        hq: "Santa Clara",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "d-matrix.ai",
+                        summary: "AI 추론 칩. In-memory computing.",
+                        products: ["Corsair"],
+                        investors: "Microsoft M12, Playground Global"
+                    }
+                ]
+            },
+            "AI Security": {
+                color: "#d63031",
+                totalFunding: "$3B+",
+                avgValuation: "$10B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "CrowdStrike",
+                        subCategory: "Cybersecurity",
+                        valuation: "$74B (public)",
+                        funding: "$480M",
+                        founded: "2011",
+                        hq: "Austin",
+                        users: "29K+ customers",
+                        revenue: "$3.4B ARR",
+                        website: "crowdstrike.com",
+                        summary: "AI 사이버보안 플랫폼. Falcon 플랫폼. 엔드포인트 보호 1위.",
+                        products: ["Falcon Platform", "Charlotte AI", "Falcon Go"],
+                        investors: "Accel, Warburg Pincus (IPO 2019)"
+                    },
+                    {
+                        rank: 2,
+                        name: "Snyk",
+                        subCategory: "Developer Security",
+                        valuation: "$8.5B",
+                        funding: "$849M",
+                        founded: "2015",
+                        hq: "Boston",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "snyk.io",
+                        summary: "AI 개발자 보안 플랫폼. 코드/오픈소스 취약점 탐지.",
+                        products: ["Snyk Code", "Snyk Open Source", "Snyk Container", "Snyk IaC"],
+                        investors: "Accel, GV, Tiger Global"
+                    },
+                    {
+                        rank: 3,
+                        name: "SentinelOne",
+                        subCategory: "Endpoint",
+                        valuation: "$7.5B (public)",
+                        funding: "$700M",
+                        founded: "2013",
+                        hq: "Mountain View",
+                        users: "12K+ customers",
+                        revenue: "$818M ARR",
+                        website: "sentinelone.com",
+                        summary: "AI 엔드포인트 보안. 자율 위협 대응.",
+                        products: ["Singularity Platform", "Purple AI"],
+                        investors: "Tiger Global, Insight (IPO 2021)"
+                    },
+                    {
+                        rank: 4,
+                        name: "Darktrace",
+                        subCategory: "Cybersecurity",
+                        valuation: "$5.3B (인수)",
+                        funding: "Acquired",
+                        founded: "2013",
+                        hq: "Cambridge, UK",
+                        users: "9K+ customers",
+                        revenue: "-",
+                        website: "darktrace.com",
+                        summary: "AI 사이버보안. Thoma Bravo에 인수됨.",
+                        products: ["DETECT", "RESPOND", "PREVENT", "Cyber AI Analyst"],
+                        investors: "Thoma Bravo (acquired 2024)"
+                    },
+                    {
+                        rank: 5,
+                        name: "Abnormal Security",
+                        subCategory: "Email Security",
+                        valuation: "$5.1B",
+                        funding: "$284M",
+                        founded: "2018",
+                        hq: "San Francisco",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "abnormalsecurity.com",
+                        summary: "AI 이메일 보안. 피싱/BEC 공격 탐지.",
+                        products: ["Inbound Email Security", "Account Takeover Protection"],
+                        investors: "Greylock, Insight Partners"
+                    },
+                    {
+                        rank: 6,
+                        name: "Vectra AI",
+                        subCategory: "Threat Detection",
+                        valuation: "$1.2B",
+                        funding: "$350M",
+                        founded: "2012",
+                        hq: "San Jose",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "vectra.ai",
+                        summary: "AI 위협 탐지. 네트워크 행동 분석.",
+                        products: ["Vectra AI Platform", "Attack Signal Intelligence"],
+                        investors: "TCV, Khosla Ventures"
+                    },
+                    {
+                        rank: 7,
+                        name: "Promptfoo",
+                        subCategory: "AI Security",
+                        valuation: "-",
+                        funding: "$23.7M",
+                        founded: "2024",
+                        hq: "US",
+                        users: "125K+ developers",
+                        revenue: "-",
+                        website: "promptfoo.dev",
+                        summary: "AI 보안 테스트 도구. LLM 취약점 발견 및 레드팀.",
+                        products: ["Promptfoo CLI", "Red Team", "Evals"],
+                        investors: "Insight Partners, a16z"
+                    }
+                ]
+            },
+            "AI Fintech": {
+                color: "#ffeaa7",
+                totalFunding: "$15B+",
+                avgValuation: "$20B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "Stripe",
+                        subCategory: "Payments",
+                        valuation: "$91.5B",
+                        funding: "$9B",
+                        founded: "2010",
+                        hq: "San Francisco",
+                        users: "Millions of businesses",
+                        revenue: "-",
+                        website: "stripe.com",
+                        summary: "결제 + AI 사기 탐지. Radar AI. 온라인 결제 인프라.",
+                        products: ["Stripe Payments", "Radar (AI Fraud)", "Connect", "Billing", "Atlas"],
+                        investors: "Sequoia, a16z, Tiger Global"
+                    },
+                    {
+                        rank: 2,
+                        name: "Klarna",
+                        subCategory: "BNPL",
+                        valuation: "$14.6B",
+                        funding: "$4.5B",
+                        founded: "2005",
+                        hq: "Stockholm, Sweden",
+                        users: "114M users",
+                        revenue: "Profitable",
+                        website: "klarna.com",
+                        summary: "BNPL + AI 쇼핑 어시스턴트. AI로 인력 감축 성공.",
+                        products: ["Klarna Pay", "Klarna AI Assistant", "Klarna Card"],
+                        investors: "Sequoia, Silver Lake, SoftBank"
+                    },
+                    {
+                        rank: 3,
+                        name: "Ramp",
+                        subCategory: "Expense Mgmt",
+                        valuation: "$13B",
+                        funding: "$1.6B",
+                        founded: "2019",
+                        hq: "New York",
+                        users: "30K+ businesses",
+                        revenue: "-",
+                        website: "ramp.com",
+                        summary: "AI 비용 관리 플랫폼. 자동 경비 분류.",
+                        products: ["Ramp Cards", "Ramp Intelligence", "Bill Pay", "Accounting"],
+                        investors: "Thrive Capital, Founders Fund, Stripe"
+                    },
+                    {
+                        rank: 4,
+                        name: "Brex",
+                        subCategory: "Corporate Cards",
+                        valuation: "$12.3B",
+                        funding: "$1.5B",
+                        founded: "2017",
+                        hq: "San Francisco",
+                        users: "20K+ customers",
+                        revenue: "-",
+                        website: "brex.com",
+                        summary: "AI 기업 금융 플랫폼. 스타트업용 기업 카드.",
+                        products: ["Brex Card", "Brex AI", "Empower", "Travel"],
+                        investors: "Tiger Global, Y Combinator, Ribbit"
+                    },
+                    {
+                        rank: 5,
+                        name: "Plaid",
+                        subCategory: "Financial Data",
+                        valuation: "$6.1B",
+                        funding: "$734M",
+                        founded: "2013",
+                        hq: "San Francisco",
+                        users: "8K+ fintech apps",
+                        revenue: "-",
+                        website: "plaid.com",
+                        summary: "금융 데이터 API. 은행 계좌 연동 인프라.",
+                        products: ["Plaid Link", "Transactions", "Identity", "Income"],
+                        investors: "a16z, Index Ventures, Kleiner Perkins"
+                    },
+                    {
+                        rank: 6,
+                        name: "AlphaSense",
+                        subCategory: "Research",
+                        valuation: "$4B",
+                        funding: "$620M",
+                        founded: "2011",
+                        hq: "New York",
+                        users: "4K+ Enterprise",
+                        revenue: "-",
+                        website: "alpha-sense.com",
+                        summary: "AI 금융 리서치 플랫폼. 기업/시장 정보 검색.",
+                        products: ["AlphaSense Search", "Expert Insights", "Company Tearsheets"],
+                        investors: "Viking Global, Goldman Sachs"
+                    },
+                    {
+                        rank: 7,
+                        name: "Upstart",
+                        subCategory: "Lending",
+                        valuation: "$3.6B (public)",
+                        funding: "Public",
+                        founded: "2012",
+                        hq: "San Mateo",
+                        users: "100+ bank partners",
+                        revenue: "$713M",
+                        website: "upstart.com",
+                        summary: "AI 대출 플랫폼. ML 기반 신용 평가.",
+                        products: ["Personal Loans", "Auto Loans", "Small Business"],
+                        investors: "Khosla Ventures (IPO 2020)"
+                    }
+                ]
+            },
+            "AI Education": {
+                color: "#81ecec",
+                totalFunding: "$1B+",
+                avgValuation: "$5B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "Duolingo",
+                        subCategory: "Language",
+                        valuation: "$11B (public)",
+                        funding: "$183M",
+                        founded: "2011",
+                        hq: "Pittsburgh",
+                        users: "100M+ users",
+                        revenue: "$531M",
+                        website: "duolingo.com",
+                        summary: "AI 언어 학습 앱. Duolingo Max GPT-4 통합.",
+                        products: ["Duolingo App", "Duolingo Max", "Duolingo Math", "Duolingo ABC"],
+                        investors: "CapitalG, Google (IPO 2021)"
+                    },
+                    {
+                        rank: 2,
+                        name: "Coursera",
+                        subCategory: "Online Learning",
+                        valuation: "$2.5B (public)",
+                        funding: "$464M",
+                        founded: "2012",
+                        hq: "Mountain View",
+                        users: "136M+ learners",
+                        revenue: "$636M",
+                        website: "coursera.org",
+                        summary: "온라인 학습 + AI. 대학 강좌 플랫폼.",
+                        products: ["Coursera Courses", "Coursera Plus", "Coursera for Business", "Coursera Coach"],
+                        investors: "Kleiner Perkins, NEA (IPO 2021)"
+                    },
+                    {
+                        rank: 3,
+                        name: "Khan Academy",
+                        subCategory: "K-12",
+                        valuation: "Nonprofit",
+                        funding: "Nonprofit",
+                        founded: "2008",
+                        hq: "Mountain View",
+                        users: "150M+ users",
+                        revenue: "-",
+                        website: "khanacademy.org",
+                        summary: "AI 튜터 Khanmigo. OpenAI GPT-4 기반 무료 교육.",
+                        products: ["Khan Academy", "Khanmigo (AI Tutor)"],
+                        investors: "Gates Foundation, Google"
+                    },
+                    {
+                        rank: 4,
+                        name: "Chegg",
+                        subCategory: "Tutoring",
+                        valuation: "$660M (public)",
+                        funding: "Public",
+                        founded: "2005",
+                        hq: "Santa Clara",
+                        users: "Students",
+                        revenue: "$632M",
+                        website: "chegg.com",
+                        summary: "AI 학습 어시스턴트. 숙제 도움 플랫폼.",
+                        products: ["Chegg Study", "Chegg Writing", "Chegg Math"],
+                        investors: "Public (IPO 2013)"
+                    },
+                    {
+                        rank: 5,
+                        name: "Speak",
+                        subCategory: "Language",
+                        valuation: "-",
+                        funding: "$78M",
+                        founded: "2016",
+                        hq: "San Francisco",
+                        users: "Users",
+                        revenue: "-",
+                        website: "speak.com",
+                        summary: "AI 영어 회화 학습. 한국에서 큰 인기.",
+                        products: ["Speak App", "AI Tutor"],
+                        investors: "OpenAI, Founders Fund, Y Combinator"
+                    },
+                    {
+                        rank: 6,
+                        name: "Quizlet",
+                        subCategory: "Study Tools",
+                        valuation: "-",
+                        funding: "$62M",
+                        founded: "2005",
+                        hq: "San Francisco",
+                        users: "60M+ users",
+                        revenue: "-",
+                        website: "quizlet.com",
+                        summary: "AI 학습 플래시카드. Q-Chat AI 튜터.",
+                        products: ["Quizlet", "Q-Chat", "Learn Mode"],
+                        investors: "Union Square Ventures, Owl Ventures"
+                    },
+                    {
+                        rank: 7,
+                        name: "Photomath",
+                        subCategory: "Math",
+                        valuation: "$220M (인수)",
+                        funding: "Acquired",
+                        founded: "2014",
+                        hq: "Zagreb, Croatia",
+                        users: "220M+ downloads",
+                        revenue: "-",
+                        website: "photomath.com",
+                        summary: "AI 수학 문제 풀이. Google에 인수됨.",
+                        products: ["Photomath App"],
+                        investors: "Google (acquired 2022)"
+                    }
+                ]
+            },
+            "AI HR": {
+                color: "#fab1a0",
+                totalFunding: "$3B+",
+                avgValuation: "$8B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "Rippling",
+                        subCategory: "HR Platform",
+                        valuation: "$13.5B",
+                        funding: "$1.4B",
+                        founded: "2016",
+                        hq: "San Francisco",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "rippling.com",
+                        summary: "AI HR 및 IT 플랫폼. 올인원 직원 관리.",
+                        products: ["Rippling HR", "Rippling IT", "Rippling Finance", "Rippling Spend"],
+                        investors: "Sequoia, Founders Fund, Coatue"
+                    },
+                    {
+                        rank: 2,
+                        name: "Gusto",
+                        subCategory: "Payroll",
+                        valuation: "$9.5B",
+                        funding: "$746M",
+                        founded: "2011",
+                        hq: "San Francisco",
+                        users: "300K+ businesses",
+                        revenue: "-",
+                        website: "gusto.com",
+                        summary: "AI 급여 및 HR. 중소기업 급여 자동화.",
+                        products: ["Gusto Payroll", "Gusto Benefits", "Gusto HR"],
+                        investors: "General Catalyst, CapitalG, T. Rowe Price"
+                    },
+                    {
+                        rank: 3,
+                        name: "Eightfold AI",
+                        subCategory: "Talent",
+                        valuation: "$2.1B",
+                        funding: "$420M",
+                        founded: "2016",
+                        hq: "Santa Clara",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "eightfold.ai",
+                        summary: "AI 채용 및 인재 관리. 스킬 기반 인재 매칭.",
+                        products: ["Talent Acquisition", "Talent Management", "Talent Flex"],
+                        investors: "SoftBank, General Catalyst, Capital One"
+                    },
+                    {
+                        rank: 4,
+                        name: "Beamery",
+                        subCategory: "Talent",
+                        valuation: "$800M",
+                        funding: "$178M",
+                        founded: "2014",
+                        hq: "London, UK",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "beamery.com",
+                        summary: "AI 인재 확보 플랫폼. 후보자 관계 관리.",
+                        products: ["Beamery Talent Graph", "Beamery Talent Index"],
+                        investors: "NEA, Ontario Teachers', EQT"
+                    },
+                    {
+                        rank: 5,
+                        name: "HireVue",
+                        subCategory: "Recruiting",
+                        valuation: "$500M",
+                        funding: "$93M",
+                        founded: "2004",
+                        hq: "South Jordan",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "hirevue.com",
+                        summary: "AI 비디오 면접. 자동화된 면접 분석.",
+                        products: ["HireVue Video Interviews", "HireVue Assessments", "HireVue AI"],
+                        investors: "Sequoia, TCV"
+                    },
+                    {
+                        rank: 6,
+                        name: "Pymetrics",
+                        subCategory: "Assessment",
+                        valuation: "-",
+                        funding: "$68M",
+                        founded: "2012",
+                        hq: "New York",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "pymetrics.ai",
+                        summary: "AI 채용 평가. 게임 기반 인재 평가. Harver와 합병.",
+                        products: ["Pymetrics Games", "Soft Skills Assessment"],
+                        investors: "Khosla Ventures (merged with Harver)"
+                    },
+                    {
+                        rank: 7,
+                        name: "Textio",
+                        subCategory: "Recruiting",
+                        valuation: "-",
+                        funding: "$42M",
+                        founded: "2014",
+                        hq: "Seattle",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "textio.com",
+                        summary: "AI 채용 공고 최적화. 편향 제거 글쓰기.",
+                        products: ["Textio Hire", "Textio Lift"],
+                        investors: "Emergence Capital, Scale Venture"
+                    }
+                ]
+            },
+            "AI Marketing": {
+                color: "#55efc4",
+                totalFunding: "$300M+",
+                avgValuation: "$20B",
+                companies: [
+                    {
+                        rank: 1,
+                        name: "The Trade Desk",
+                        subCategory: "Advertising",
+                        valuation: "$58B (public)",
+                        funding: "Public",
+                        founded: "2009",
+                        hq: "Ventura",
+                        users: "Advertisers",
+                        revenue: "$2.4B",
+                        website: "thetradedesk.com",
+                        summary: "AI 광고 플랫폼. 프로그래매틱 광고 DSP.",
+                        products: ["The Trade Desk Platform", "Koa AI", "Unified ID 2.0"],
+                        investors: "Public (IPO 2016)"
+                    },
+                    {
+                        rank: 2,
+                        name: "Persado",
+                        subCategory: "Content",
+                        valuation: "-",
+                        funding: "$130M",
+                        founded: "2012",
+                        hq: "New York",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "persado.com",
+                        summary: "AI 마케팅 언어 생성. 감정 기반 카피라이팅.",
+                        products: ["Motivation AI", "Persado Platform"],
+                        investors: "Goldman Sachs, Bain Capital"
+                    },
+                    {
+                        rank: 3,
+                        name: "Smartly.io",
+                        subCategory: "Social Ads",
+                        valuation: "-",
+                        funding: "$55M",
+                        founded: "2013",
+                        hq: "Helsinki, Finland",
+                        users: "700+ brands",
+                        revenue: "-",
+                        website: "smartly.io",
+                        summary: "AI 소셜 광고 자동화. Meta/TikTok 광고 최적화.",
+                        products: ["Creative AI", "Media Buying", "Reporting"],
+                        investors: "Highland Europe"
+                    },
+                    {
+                        rank: 4,
+                        name: "Phrasee",
+                        subCategory: "Content",
+                        valuation: "-",
+                        funding: "$31M",
+                        founded: "2015",
+                        hq: "London, UK",
+                        users: "Enterprise",
+                        revenue: "-",
+                        website: "phrasee.co",
+                        summary: "AI 마케팅 카피 최적화. 이메일 제목 최적화.",
+                        products: ["Phrasee Platform", "Content Optimization"],
+                        investors: "Octopus Ventures"
+                    },
+                    {
+                        rank: 5,
+                        name: "Albert",
+                        subCategory: "Advertising",
+                        valuation: "-",
+                        funding: "$18M",
+                        founded: "2014",
+                        hq: "Tel Aviv, Israel",
+                        users: "Brands",
+                        revenue: "-",
+                        website: "albert.ai",
+                        summary: "AI 자율 마케팅 플랫폼. 자동화된 미디어 바잉.",
+                        products: ["Albert AI Platform"],
+                        investors: "Blumberg Capital"
+                    }
+                ]
+            }
+        };
+
+        // Generate category grid
+        function generateCategoryGrid() {
+            const grid = document.getElementById('categoryGrid');
+            grid.innerHTML = '';
+
+            Object.entries(categoryData).forEach(([name, data]) => {
+                const btn = document.createElement('div');
+                btn.className = 'category-btn';
+                btn.innerHTML = `
+                    <h3>${name}</h3>
+                    <div class="count">${data.companies.length}</div>
+                    <div class="funding">${data.totalFunding} 총 펀딩</div>
+                `;
+                btn.style.borderColor = data.color;
+                btn.onclick = () => showCategory(name);
+                grid.appendChild(btn);
+            });
+        }
+
+        // Show category details
+        function showCategory(categoryName) {
+            const data = categoryData[categoryName];
+            const container = document.getElementById('categoryDetails');
+
+            // Update active state
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.querySelector('h3').textContent === categoryName) {
+                    btn.classList.add('active');
+                }
+            });
+
+            // Sort companies by valuation (handle non-numeric values)
+            const sortedCompanies = [...data.companies].sort((a, b) => {
+                const parseVal = (v) => {
+                    if (!v || v === '-') return 0;
+                    const match = v.match(/[\d.]+/);
+                    return match ? parseFloat(match[0]) : 0;
+                };
+                return parseVal(b.valuation) - parseVal(a.valuation);
+            });
+
+            const html = `
+                <div class="category-detail active">
+                    <div class="category-header">
+                        <h2 style="color: ${data.color}">${categoryName}</h2>
+                        <div class="category-stats">
+                            <div class="stat">
+                                <div class="stat-value">${data.companies.length}</div>
+                                <div class="stat-label">기업 수</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${data.totalFunding}</div>
+                                <div class="stat-label">총 펀딩</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${data.avgValuation}</div>
+                                <div class="stat-label">평균 밸류</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${sortedCompanies.map((company, idx) => `
+                        <div class="company-card">
+                            <div class="company-header">
+                                <div style="display: flex; align-items: center;">
+                                    <div class="company-rank ${idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : ''}">${idx + 1}</div>
+                                    <div class="company-info">
+                                        <div class="company-name">
+                                            <a href="https://${company.website}" target="_blank">${company.name}</a>
+                                            <span class="badge" style="margin-left: 10px; background: rgba(${hexToRgb(data.color)}, 0.2); color: ${data.color}">${company.subCategory}</span>
+                                        </div>
+                                        <div class="company-sub">${company.hq} · Founded ${company.founded}</div>
+                                    </div>
+                                </div>
+                                <div class="company-metrics">
+                                    <div class="metric">
+                                        <div class="metric-value">${company.valuation}</div>
+                                        <div class="metric-label">Valuation</div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-value">${company.funding}</div>
+                                        <div class="metric-label">Funding</div>
+                                    </div>
+                                    <div class="metric">
+                                        <div class="metric-value">${company.revenue || '-'}</div>
+                                        <div class="metric-label">Revenue</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="company-description">
+                                <h4>서비스 요약</h4>
+                                <p>${company.summary}</p>
+                            </div>
+
+                            <div class="company-details">
+                                <div class="detail-item">
+                                    <div class="detail-label">Users/Customers</div>
+                                    <div class="detail-value">${company.users}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Website</div>
+                                    <div class="detail-value"><a href="https://${company.website}" target="_blank" style="color: #00d9ff">${company.website}</a></div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Key Investors</div>
+                                    <div class="detail-value">${company.investors}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Founded</div>
+                                    <div class="detail-value">${company.founded}</div>
+                                </div>
+                            </div>
+
+                            <div class="products-section">
+                                <h4>주요 프로덕트</h4>
+                                <div class="product-list">
+                                    ${company.products.map(p => `<span class="product-tag">${p}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            container.innerHTML = html;
+            container.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Helper function to convert hex to rgb
+        function hexToRgb(hex) {
+            const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+            return result ?
+                `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` :
+                '255, 255, 255';
+        }
+
+        // Check URL hash for direct category link
+        function checkHash() {
+            const hash = window.location.hash.slice(1);
+            if (hash && categoryData[decodeURIComponent(hash)]) {
+                showCategory(decodeURIComponent(hash));
+            }
+        }
+
+        // Initialize
+        generateCategoryGrid();
+        checkHash();
+        window.addEventListener('hashchange', checkHash);
+    </script>
+</body>
+</html>

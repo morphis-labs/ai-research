@@ -1,0 +1,173 @@
+Company,Service Summary,Category,Sub-Category,Founded,Headquarters,Total Funding,Valuation,Key Investors,User Base / Customers,Revenue (ARR),Website
+OpenAI,ChatGPT 개발사. GPT-4 등 최첨단 LLM 모델 개발,Foundation Models,LLM,2015,San Francisco US,$21.9B+,$500B,Microsoft SoftBank Thrive,300M+ users,$13B+,openai.com
+Anthropic,Claude AI 개발. AI 안전성 중심 연구,Foundation Models,LLM,2021,San Francisco US,$13B+,$183B,Amazon Google Salesforce,Enterprise,-,anthropic.com
+xAI,Grok AI 개발. Elon Musk 설립,Foundation Models,LLM,2023,Austin US,$12B,$50B,Sequoia a16z,X/Twitter users,-,x.ai
+Mistral AI,유럽 최대 AI 스타트업. 오픈소스 LLM,Foundation Models,LLM,2023,Paris France,$640M,$6B,a16z Lightspeed,Developers,-,mistral.ai
+Cohere,기업용 LLM API 제공. 커스텀 AI 모델,Foundation Models,LLM,2019,Toronto Canada,$1.5B,$5.5B,Nvidia Salesforce AMD,$150M ARR,$150M,cohere.com
+AI21 Labs,Jamba 모델 개발. 이스라엘 AI 스타트업,Foundation Models,LLM,2017,Tel Aviv Israel,$336M,$1.4B,Intel Nvidia Google,Enterprise,-,ai21.com
+Inflection AI,Pi AI 개발. 개인화 AI 어시스턴트,Foundation Models,LLM,2022,Palo Alto US,$1.5B,$4B,Microsoft Nvidia Reid Hoffman,Pi users,-,inflection.ai
+Aleph Alpha,유럽 기업용 AI. 독일 AI 스타트업,Foundation Models,LLM,2019,Heidelberg Germany,$500M,$1B+,SAP Bosch,Enterprise,-,aleph-alpha.com
+Character.AI,AI 캐릭터와 대화. 엔터테인먼트 AI,Foundation Models,Chatbot,2021,Palo Alto US,$150M,$1B,a16z,20M+ users,-,character.ai
+Reka AI,멀티모달 AI 모델 개발,Foundation Models,Multimodal,2023,San Francisco US,$58M,-,DST Global Radical,Developers,-,reka.ai
+Moonshot AI,중국 AI 스타트업. Kimi 챗봇 개발,Foundation Models,LLM,2023,Beijing China,$1B+,$3.3B,Sequoia China Alibaba,China users,-,moonshot.cn
+Zhipu AI,중국 AI 기업. GLM 모델 개발,Foundation Models,LLM,2019,Beijing China,$400M+,$3B,Alibaba Tencent,China Enterprise,-,zhipuai.cn
+Baichuan AI,중국 오픈소스 LLM 개발,Foundation Models,LLM,2023,Beijing China,$300M,$1.2B,Alibaba Xiaomi,China developers,-,baichuan-ai.com
+Midjourney,AI 이미지 생성 선두주자. Discord 기반,AI Image/Video,Image Generation,2021,San Francisco US,Self-funded,-,Self-funded,16M+ users,$200M+,midjourney.com
+Stability AI,Stable Diffusion 개발. 오픈소스 이미지 AI,AI Image/Video,Image Generation,2019,London UK,$200M,$1B,Coatue Lightspeed,Developers,-,stability.ai
+Runway,AI 비디오 편집 및 생성. Gen-2 모델,AI Image/Video,Video Generation,2018,New York US,$250M,$1.5B,Google Nvidia Salesforce,Filmmakers,-,runwayml.com
+Pika Labs,AI 비디오 생성. 스탠포드 출신 창업,AI Image/Video,Video Generation,2023,Palo Alto US,$135M,$470M,Spark Capital Lightspeed,500K+ users,-,pika.art
+Luma AI,Dream Machine AI 비디오 생성,AI Image/Video,Video Generation,2021,Palo Alto US,$85M,$400M,a16z Matrix,Creators,-,lumalabs.ai
+Ideogram,AI 이미지 생성. 텍스트 렌더링 특화,AI Image/Video,Image Generation,2022,Toronto Canada,$80M,$580M,a16z Index,Users,-,ideogram.ai
+Leonardo.Ai,AI 이미지 생성. Canva에 인수됨,AI Image/Video,Image Generation,2022,Sydney Australia,$31M,-,Blackbird,8M+ users,-,leonardo.ai
+Kling AI,중국 Kuaishou AI 비디오 생성,AI Image/Video,Video Generation,2024,Beijing China,-,-,Kuaishou,Creators,-,klingai.com
+Higgsfield AI,AI 비디오 생성 플랫폼,AI Image/Video,Video Generation,2023,San Francisco US,$20M,-,Benchmark,541K IG followers,-,higgsfield.ai
+ElevenLabs,AI 음성 합성 및 더빙. TTS 선두,AI Audio/Voice,Voice Synthesis,2022,New York US,$180M,$3.3B,a16z ICONIQ,1M+ users,$90M,elevenlabs.io
+Descript,AI 오디오/비디오 편집. 텍스트 기반 편집,AI Audio/Voice,Audio Editing,2017,San Francisco US,$100M,$553M,OpenAI Spark,Podcasters,$55M,descript.com
+Suno AI,AI 음악 생성. 텍스트로 노래 제작,AI Audio/Voice,Music Generation,2023,Cambridge US,$125M,$500M,Lightspeed Nat Friedman,10M+ users,-,suno.com
+Udio,AI 음악 생성. 고품질 음악 제작,AI Audio/Voice,Music Generation,2023,New York US,$10M,-,a16z,Users,-,udio.com
+AIVA,AI 작곡 플랫폼. 영화/게임 음악,AI Audio/Voice,Music Generation,2016,Luxembourg,-,-,-,Composers,-,aiva.ai
+Resemble AI,AI 음성 클로닝 및 생성,AI Audio/Voice,Voice Cloning,2019,Toronto Canada,$28M,-,Radical Ventures,Enterprise,-,resemble.ai
+Cursor,AI 코드 에디터. 가장 빠르게 성장,AI Code/Dev,Code Editor,2022,San Francisco US,$2.3B,$29.3B,Coatue Accel Nvidia,$1B+ ARR,$1B+,cursor.com
+GitHub Copilot,Microsoft AI 코딩 어시스턴트,AI Code/Dev,Code Assistant,2021,San Francisco US,Microsoft,-,Microsoft,1.8M+ paid,-,github.com/copilot
+Replit,AI 기반 클라우드 IDE,AI Code/Dev,IDE,2016,San Francisco US,$250M,$3B,a16z Coatue,30M+ users,-,replit.com
+Cognition AI,Devin AI 소프트웨어 엔지니어,AI Code/Dev,AI Agent,2023,San Francisco US,$175M,$2B,Founders Fund,Developers,-,cognition.ai
+Codeium,무료 AI 코드 자동완성,AI Code/Dev,Code Assistant,2022,Mountain View US,$150M,$1.25B,Greenoaks,500K+ users,-,codeium.com
+Tabnine,AI 코드 완성. 기업용 보안 특화,AI Code/Dev,Code Assistant,2018,Tel Aviv Israel,$55M,-,Khosla Ventures,1M+ developers,-,tabnine.com
+Sourcegraph,AI 코드 검색 및 분석,AI Code/Dev,Code Search,2013,San Francisco US,$225M,$2.6B,a16z Sequoia,Enterprise,-,sourcegraph.com
+Codium,AI 테스트 코드 생성,AI Code/Dev,Code Testing,2022,Tel Aviv Israel,$40M,-,e.ventures,Developers,-,codium.ai
+Lovable,AI 웹앱 빌더. 유럽 코딩 스타트업,AI Code/Dev,No-Code,2023,Stockholm Sweden,-,$6.6B,-,Developers,-,lovable.dev
+Vercel,AI 기반 웹 개발 플랫폼,AI Code/Dev,Platform,2015,San Francisco US,$313M,$3.25B,a16z GV,Developers,-,vercel.com
+Perplexity,AI 검색 엔진. 실시간 웹 검색,AI Search,Search Engine,2022,San Francisco US,$1.5B,$20B,Nvidia Bezos Sequoia,30M+ users,-,perplexity.ai
+You.com,AI 검색 및 에이전트 인프라,AI Search,Search Engine,2020,San Francisco US,$99M,$1.5B,Salesforce Nvidia,$50M ARR,$50M,you.com
+Exa,AI 에이전트용 검색 API,AI Search,Search API,2022,San Francisco US,$22M,$700M,Nvidia Lightspeed,Developers,-,exa.ai
+Glean,기업용 AI 검색. 사내 정보 검색,AI Search,Enterprise Search,2019,Palo Alto US,$200M,$2.2B,Sequoia Kleiner,Enterprise,-,glean.com
+LangChain,LLM 앱 개발 프레임워크. 유니콘,AI Infrastructure,Framework,2022,San Francisco US,$260M,$1.25B,Sequoia Benchmark,35% Fortune 500,$16M,langchain.com
+Vellum.ai,기업용 AI 개발 플랫폼,AI Infrastructure,Dev Platform,2023,New York US,$25.5M,-,Y Combinator,Enterprise,-,vellum.ai
+PromptLayer,비개발자용 프롬프트 관리,AI Infrastructure,Prompt Mgmt,2021,New York US,$4.8M,-,ScOp Venture,10K+ users,-,promptlayer.com
+Weights & Biases,MLOps 플랫폼. CoreWeave 인수,AI Infrastructure,MLOps,2017,San Francisco US,$200M,$1.25B,NEA Insight,OpenAI Anthropic,-,wandb.ai
+Hugging Face,AI 모델 허브 및 커뮤니티,AI Infrastructure,Model Hub,2016,New York US,$235M,$4.5B,Salesforce Nvidia,50K+ orgs,$130M,huggingface.co
+Scale AI,AI 데이터 라벨링 및 인프라,AI Infrastructure,Data,2016,San Francisco US,$14.3B,$29B,Meta Thrive,Enterprise,-,scale.com
+Labelbox,AI 데이터 라벨링 플랫폼,AI Infrastructure,Data Labeling,2018,San Francisco US,$188M,$1B,a16z Google,Enterprise,-,labelbox.com
+Pinecone,벡터 데이터베이스. AI 검색 인프라,AI Infrastructure,Vector DB,2019,San Francisco US,$138M,$750M,a16z Menlo,10K+ companies,-,pinecone.io
+Weaviate,오픈소스 벡터 데이터베이스,AI Infrastructure,Vector DB,2019,Amsterdam Netherlands,$67.7M,$200M,Index NEA,Developers,-,weaviate.io
+Qdrant,오픈소스 벡터 검색 엔진,AI Infrastructure,Vector DB,2021,Berlin Germany,$28M,-,Unusual Ventures,Developers,-,qdrant.tech
+Chroma,AI 애플리케이션용 임베딩 DB,AI Infrastructure,Vector DB,2022,San Francisco US,$18M,-,a16z,Developers,-,trychroma.com
+Modal,서버리스 AI 인프라,AI Infrastructure,Compute,2021,San Francisco US,$27M,-,Redpoint,AI teams,-,modal.com
+Anyscale,Ray 오픈소스 AI 인프라,AI Infrastructure,Compute,2019,San Francisco US,$259M,$1B,a16z NEA,OpenAI Uber,-,anyscale.com
+Replicate,AI 모델 호스팅 및 배포,AI Infrastructure,Model Hosting,2019,San Francisco US,$40M,-,a16z Y Combinator,Developers,-,replicate.com
+Together AI,오픈소스 AI 모델 인프라,AI Infrastructure,Compute,2022,San Francisco US,$106M,$1.25B,Nvidia Salesforce,Developers,-,together.ai
+Fireworks AI,AI 모델 배포 및 추론,AI Infrastructure,Inference,2022,Redwood City US,$77M,$552M,a16z Sequoia,Developers,-,fireworks.ai
+Baseten,AI 모델 배포 플랫폼,AI Infrastructure,Deployment,2019,San Francisco US,$60M,-,a16z Greylock,Developers,-,baseten.co
+CoreWeave,AI 클라우드 컴퓨팅. GPU 인프라,AI Infrastructure,Cloud,2017,Roseland US,$15B+,$35B,Nvidia Magnetar,AI companies,-,coreweave.com
+Lambda Labs,AI 클라우드 GPU 인프라,AI Infrastructure,Cloud,2012,San Francisco US,$320M,-,Gradient Ventures,Researchers,-,lambdalabs.com
+Crusoe Energy,AI 데이터센터 전력 인프라,AI Infrastructure,Energy,2018,Denver US,$600M,-,Valor Equity,Data centers,-,crusoe.ai
+Databricks,데이터 + AI 통합 플랫폼,AI Data/Analytics,Data Platform,2013,San Francisco US,$10B+,$138B,a16z Thrive,$4.8B,$4.8B,databricks.com
+Snowflake,클라우드 데이터 웨어하우스,AI Data/Analytics,Data Warehouse,2012,Bozeman US,$1.4B,$75B (public),Sequoia Sutter Hill,$3.4B,$3.4B,snowflake.com
+Fivetran,데이터 통합 및 ETL,AI Data/Analytics,Data Integration,2012,Oakland US,$565M,$5.6B,a16z General Catalyst,Enterprise,-,fivetran.com
+dbt Labs,데이터 변환 플랫폼,AI Data/Analytics,Data Transform,2016,Philadelphia US,$414M,$4.2B,a16z Sequoia,Enterprise,-,getdbt.com
+Monte Carlo,데이터 옵저버빌리티,AI Data/Analytics,Data Quality,2019,San Francisco US,$236M,$1.6B,Accel GGV,Enterprise,-,montecarlodata.com
+Jasper,AI 마케팅 콘텐츠 생성,AI Enterprise,Marketing,2021,Austin US,$131M,$1.5B,Insight Coatue,$55M,$55M,jasper.ai
+Writer,기업용 AI 글쓰기 플랫폼,AI Enterprise,Content,2020,San Francisco US,$126M,$750M,Insight ICONIQ,Enterprise,-,writer.com
+Copy.ai,AI 카피라이팅 도구,AI Enterprise,Marketing,2020,Memphis US,$14M,-,Wing Craft,1M+ users,-,copy.ai
+Notion AI,Notion 내장 AI 어시스턴트,AI Enterprise,Productivity,2013,San Francisco US,$343M,$10B,Sequoia Index,100M+ users,-,notion.so
+Mem,AI 기반 노트 및 지식 관리,AI Enterprise,Productivity,2020,San Francisco US,$29M,-,a16z,Users,-,mem.ai
+Intercom,AI 고객 서비스 플랫폼. Fin AI,AI Enterprise,Customer Service,2011,San Francisco US,$241M,$1.2B,Kleiner Index,25K+ customers,-,intercom.com
+Zendesk,AI 고객 지원 솔루션,AI Enterprise,Customer Service,2007,San Francisco US,$86M,Private (Acquired),Redpoint Matrix,100K+ customers,$2.2B,zendesk.com
+Sierra,AI 고객 서비스 챗봇,AI Enterprise,Customer Service,2023,San Francisco US,$175M,$4.5B,Sequoia Benchmark,Enterprise,-,sierra.ai
+Ada,AI 고객 서비스 자동화,AI Enterprise,Customer Service,2016,Toronto Canada,$190M,$1.2B,Accel Spark,Enterprise,-,ada.cx
+Salesforce Einstein,Salesforce AI 플랫폼,AI Enterprise,CRM,1999,San Francisco US,Public,$300B+ (public),Public,150K+ customers,-,salesforce.com/ai
+Gong,AI 영업 인텔리전스,AI Enterprise,Sales,2015,San Francisco US,$584M,$7.25B,Sequoia Coatue,4K+ customers,-,gong.io
+Clari,AI 매출 예측 플랫폼,AI Enterprise,Sales,2012,Sunnyvale US,$496M,$2.6B,Sequoia a16z,Enterprise,-,clari.com
+People.ai,AI 영업 효율화,AI Enterprise,Sales,2016,San Francisco US,$200M,$1.1B,Lightspeed Thrive,Enterprise,-,people.ai
+ZoomInfo,B2B 데이터 및 AI 인텔리전스,AI Enterprise,Sales Intelligence,2000,Vancouver US,Public,$17B (public),Public,35K+ customers,$1.3B,zoominfo.com
+Outreach,AI 영업 자동화 플랫폼,AI Enterprise,Sales,2014,Seattle US,$489M,$4.4B,Sapphire DFJ,6K+ customers,-,outreach.io
+HubSpot,AI 마케팅/영업/서비스 플랫폼,AI Enterprise,CRM,2006,Cambridge US,Public,$35B (public),Public,228K+ customers,$2.6B,hubspot.com
+Grammarly,AI 글쓰기 어시스턴트,AI Enterprise,Writing,2009,San Francisco US,$400M,$13B,Baillie Gifford IVP,30M+ daily users,-,grammarly.com
+Tome,AI 프레젠테이션 생성,AI Enterprise,Presentation,2020,San Francisco US,$81M,$600M,Greylock Lightspeed,Users,-,tome.app
+Gamma,AI 프레젠테이션 및 문서,AI Enterprise,Presentation,2020,San Francisco US,$20M,-,Accel,Users,-,gamma.app
+Beautiful.ai,AI 프레젠테이션 디자인,AI Enterprise,Presentation,2017,San Francisco US,$36M,-,Shasta,Users,-,beautiful.ai
+Canva,AI 디자인 플랫폼. Magic Studio,AI Creative,Design,2012,Sydney Australia,$570M,$40B,Sequoia Felicis,185M+ users,$2.3B,canva.com
+Figma,AI 디자인 협업 도구,AI Creative,Design,2012,San Francisco US,$333M,$12.5B,a16z Greylock,Designers,-,figma.com
+Adobe Firefly,Adobe AI 이미지 생성,AI Creative,Design,1982,San Jose US,Public,$180B (public),Public,Creative Cloud users,$21B,adobe.com/firefly
+Photoroom,AI 배경 제거 및 이미지 편집,AI Creative,Photo Editing,2019,Paris France,$65M,$500M,Balderton Spark,150M+ downloads,-,photoroom.com
+Remove.bg,AI 배경 제거 서비스,AI Creative,Photo Editing,2018,Vienna Austria,Acquired,-,Canva (acquired),Users,-,remove.bg
+Lensa AI,AI 아바타 생성 앱,AI Creative,Photo Editing,2018,US,-,-,Prisma Labs,Users,-,lensa-ai.com
+Synthesia,AI 아바타 비디오 생성,AI Creative,Video,2017,London UK,$157M,$1B,Kleiner Accel,50K+ customers,-,synthesia.io
+HeyGen,AI 아바타 비디오 생성,AI Creative,Video,2020,Los Angeles US,$60M,$500M,Benchmark Thrive,300K+ users,-,heygen.com
+D-ID,AI 디지털 휴먼 및 아바타,AI Creative,Video,2017,Tel Aviv Israel,$48M,$150M,Pitango,Enterprise,-,d-id.com
+Typeface,기업용 AI 콘텐츠 플랫폼,AI Creative,Content,2022,San Francisco US,$165M,$1B,Lightspeed GV,Enterprise,-,typeface.ai
+Harvey,AI 법률 어시스턴트,AI Legal,Legal Research,2022,San Francisco US,$806M,$8B,Sequoia OpenAI,Law firms,-,harvey.ai
+Casetext,AI 법률 리서치. Thomson Reuters 인수,AI Legal,Legal Research,2013,San Francisco US,Acquired,$650M (acquired),Thomson Reuters,Lawyers,-,casetext.com
+Spellbook,AI 계약서 검토 및 작성,AI Legal,Contract,2020,Toronto Canada,$21M,-,Moxxie Gradient,Lawyers,-,spellbook.legal
+Robin AI,AI 계약서 분석,AI Legal,Contract,2019,London UK,$33M,-,Temasek,Enterprise,-,robinai.com
+Eve,AI 법률 연구 플랫폼,AI Legal,Legal Research,2023,San Francisco US,$47M,-,a16z,Lawyers,-,eve.legal
+Abridge,AI 의료 기록 자동화,AI Healthcare,Medical Records,2018,Pittsburgh US,$550M,$5.3B,Lightspeed CVS,Health systems,-,abridge.com
+Tempus,AI 정밀 의료 플랫폼,AI Healthcare,Precision Medicine,2015,Chicago US,$1.3B,$8.1B,NEA Google,Providers,-,tempus.com
+Recursion,AI 신약 개발,AI Healthcare,Drug Discovery,2013,Salt Lake City US,$966M,$4B (public),a16z SoftBank,Pharma partners,-,recursion.com
+Insitro,AI 신약 개발. 머신러닝 기반,AI Healthcare,Drug Discovery,2018,South San Francisco US,$743M,$2.5B,a16z GV,Pharma partners,-,insitro.com
+Xaira Therapeutics,AI 신약 발견 스타트업,AI Healthcare,Drug Discovery,2024,San Francisco US,$1B,$2.7B,ARCH Foresite,-,-,xaira.com
+Isomorphic Labs,DeepMind 스핀오프. AI 신약 개발,AI Healthcare,Drug Discovery,2021,London UK,$600M,-,Google Thrive,-,-,isomorphiclabs.com
+Insilico Medicine,AI 기반 신약 개발,AI Healthcare,Drug Discovery,2014,Hong Kong,$407M,$900M,Qiming Sequoia,Pharma partners,-,insilico.com
+Paige,AI 암 진단 병리학,AI Healthcare,Diagnostics,2017,New York US,$220M,$1.4B,General Atlantic,Hospitals,-,paige.ai
+PathAI,AI 병리학 진단,AI Healthcare,Diagnostics,2016,Boston US,$255M,$1.25B,General Atlantic,Labs,-,pathai.com
+Viz.ai,AI 뇌졸중 진단,AI Healthcare,Diagnostics,2016,San Francisco US,$250M,$1.2B,Insight Tiger,1.3K+ hospitals,-,viz.ai
+K Health,AI 1차 진료 플랫폼,AI Healthcare,Telehealth,2016,New York US,$271M,$1.5B,14W Valor,10M+ users,-,khealth.com
+Babylon Health,AI 헬스케어 챗봇,AI Healthcare,Telehealth,2013,London UK,$635M,-,Kinnevik,Users,-,babylon.com
+Waymo,자율주행 1위. Alphabet 자회사,AI Autonomous,Robotaxi,2009,Mountain View US,$5.6B,-,Alphabet a16z,100K rides/week,-,waymo.com
+Cruise,GM 자율주행. 운영 중단,AI Autonomous,Robotaxi,2013,San Francisco US,$10B,-,GM SoftBank Honda,-,-,getcruise.com
+Aurora,자율주행 트럭 1위,AI Autonomous,Trucking,2017,Pittsburgh US,$1B,$4.3B (public),Sequoia Amazon,FedEx partner,-,aurora.tech
+Wayve,영국 자율주행 AI,AI Autonomous,Self-Driving,2017,London UK,$1.05B,-,SoftBank Microsoft,-,-,wayve.ai
+Zoox,Amazon 자율주행 로보택시,AI Autonomous,Robotaxi,2014,Foster City US,Acquired,$1.2B (acquired),Amazon,-,-,zoox.com
+Nuro,자율주행 배송 로봇,AI Autonomous,Delivery,2016,Mountain View US,$2.1B,$8.6B,SoftBank Google,Partners,-,nuro.ai
+Figure AI,휴머노이드 로봇 선두,AI Robotics,Humanoid,2022,Sunnyvale US,$754M,$2.6B,Microsoft OpenAI Nvidia,BMW partner,-,figure.ai
+Boston Dynamics,로봇 기술 선두. Hyundai 자회사,AI Robotics,Industrial,1992,Waltham US,$100M+,-,Hyundai,-,-,bostondynamics.com
+Agility Robotics,Digit 휴머노이드 로봇,AI Robotics,Humanoid,2015,Corvallis US,$177M,-,DCVC Playground,Amazon partner,-,agilityrobotics.com
+1X Technologies,휴머노이드 로봇. 노르웨이,AI Robotics,Humanoid,2014,Moss Norway,$125M,-,OpenAI Tiger,Enterprise,-,1x.tech
+Apptronik,휴머노이드 로봇 Apollo,AI Robotics,Humanoid,2016,Austin US,$25M,-,Google Ventures,-,-,apptronik.com
+Sanctuary AI,AI 휴머노이드 로봇,AI Robotics,Humanoid,2018,Vancouver Canada,$140M,-,Accel SE Ventures,-,-,sanctuary.ai
+Nvidia,AI 칩 및 GPU 지배자,AI Chips,GPU,1993,Santa Clara US,Public,$3.3T (public),Public,AI industry,$130B,nvidia.com
+AMD,AI 및 데이터센터 칩,AI Chips,GPU,1969,Santa Clara US,Public,$180B (public),Public,Enterprise,$23B,amd.com
+Intel,AI 칩 및 프로세서,AI Chips,CPU/AI,1968,Santa Clara US,Public,$90B (public),Public,Enterprise,$54B,intel.com
+Groq,AI 추론 칩 LPU,AI Chips,Inference,2016,Mountain View US,$750M,$6.9B,Nvidia (2025) Tiger,AI companies,-,groq.com
+Cerebras,웨이퍼 스케일 AI 칩,AI Chips,Training,2016,Sunnyvale US,$1.1B,-,a16z Benchmark,OpenAI partner,-,cerebras.net
+SambaNova,기업용 AI 칩 및 플랫폼,AI Chips,Full Stack,2017,Palo Alto US,$1.1B,$5.1B,SoftBank BlackRock,Enterprise,-,sambanova.ai
+Graphcore,AI 가속기 IPU,AI Chips,Accelerator,2016,Bristol UK,$710M,$2.77B,Microsoft Dell,Enterprise,-,graphcore.ai
+Tenstorrent,AI 칩 설계. Jim Keller 주도,AI Chips,Accelerator,2016,Santa Clara US,$370M,$1B+,Hyundai Samsung,Enterprise,-,tenstorrent.com
+d-Matrix,AI 추론 칩,AI Chips,Inference,2019,Santa Clara US,$160M,-,Microsoft M12,Enterprise,-,d-matrix.ai
+Hailo,엣지 AI 칩,AI Chips,Edge AI,2017,Tel Aviv Israel,$224M,$1B,Gil Ventures,Automotive,-,hailo.ai
+CrowdStrike,AI 사이버보안 플랫폼,AI Security,Cybersecurity,2011,Austin US,$480M,$74B (public),Accel Warburg,$3.4B,$3.4B,crowdstrike.com
+Darktrace,AI 사이버보안. Thoma Bravo 인수,AI Security,Cybersecurity,2013,Cambridge UK,Acquired,$5.3B (acquired),Summit Insight,9K+ customers,-,darktrace.com
+SentinelOne,AI 엔드포인트 보안,AI Security,Endpoint,2013,Mountain View US,$700M,$7.5B (public),Tiger Insight,$818M,$818M,sentinelone.com
+Vectra AI,AI 위협 탐지,AI Security,Threat Detection,2012,San Jose US,$350M,$1.2B,TCV Khosla,Enterprise,-,vectra.ai
+Abnormal Security,AI 이메일 보안,AI Security,Email Security,2018,San Francisco US,$284M,$5.1B,Greylock Insight,Enterprise,-,abnormalsecurity.com
+Snyk,AI 개발자 보안 플랫폼,AI Security,Developer Security,2015,Boston US,$849M,$8.5B,Accel GV,Enterprise,-,snyk.io
+Promptfoo,AI 보안 테스트 도구,AI Security,AI Security,2024,US,$23.7M,-,Insight a16z,125K+ developers,-,promptfoo.dev
+Stripe,결제 + AI 사기 탐지,AI Fintech,Payments,2010,San Francisco US,$9B,$91.5B,Sequoia a16z,$1.4T processed,-,stripe.com
+Plaid,금융 데이터 API,AI Fintech,Financial Data,2013,San Francisco US,$734M,$6.1B,a16z Index,8K+ fintech apps,-,plaid.com
+Klarna,BNPL + AI 쇼핑 어시스턴트,AI Fintech,BNPL,2005,Stockholm Sweden,$4.5B,$14.6B,Sequoia Silver Lake,114M users,Profitable,klarna.com
+Ramp,AI 비용 관리 플랫폼,AI Fintech,Expense Mgmt,2019,New York US,$1.6B,$13B,Thrive Founders Fund,30K+ businesses,-,ramp.com
+Brex,AI 기업 금융 플랫폼,AI Fintech,Corporate Cards,2017,San Francisco US,$1.5B,$12.3B,Tiger Y Combinator,20K+ customers,-,brex.com
+Upstart,AI 대출 플랫폼,AI Fintech,Lending,2012,San Mateo US,Public,$3.6B (public),Khosla,$1.6B,$713M,upstart.com
+AlphaSense,AI 금융 리서치 플랫폼,AI Fintech,Research,2011,New York US,$620M,$4B,Viking GS,4K+ Enterprise,-,alpha-sense.com
+Kensho,S&P Global AI 분석,AI Fintech,Analytics,2013,Cambridge US,Acquired,$550M (acquired),S&P Global,S&P customers,-,kensho.com
+Duolingo,AI 언어 학습 앱,AI Education,Language,2011,Pittsburgh US,$183M,$11B (public),CapitalG Google,100M+ users,$531M,duolingo.com
+Khan Academy,AI 튜터 Khanmigo,AI Education,K-12,2008,Mountain View US,Nonprofit,-,Gates Foundation,150M+ users,-,khanacademy.org
+Coursera,온라인 학습 + AI,AI Education,Online Learning,2012,Mountain View US,$464M,$2.5B (public),Kleiner NEA,136M+ learners,$636M,coursera.org
+Chegg,AI 학습 어시스턴트,AI Education,Tutoring,2005,Santa Clara US,Public,$660M (public),Public,Students,$632M,chegg.com
+Speak,AI 영어 회화 학습,AI Education,Language,2016,San Francisco US,$78M,-,OpenAI Founders Fund,Users,-,speak.com
+Photomath,AI 수학 문제 풀이,AI Education,Math,2014,Zagreb Croatia,Acquired,$220M (acquired),Google,220M+ downloads,-,photomath.com
+Quizlet,AI 학습 플래시카드,AI Education,Study Tools,2005,San Francisco US,$62M,-,Union Square,60M+ users,-,quizlet.com
+Workday,AI HR 및 재무 소프트웨어,AI HR,HCM,2005,Pleasanton US,Public,$65B (public),Greylock,$7.7B,$7.7B,workday.com
+ServiceNow,AI 기업 워크플로우,AI HR,Workflow,2004,Santa Clara US,Public,$180B (public),Sequoia,$10.4B,$10.4B,servicenow.com
+Rippling,AI HR 및 IT 플랫폼,AI HR,HR Platform,2016,San Francisco US,$1.4B,$13.5B,Sequoia Founders Fund,Enterprise,-,rippling.com
+Gusto,AI 급여 및 HR,AI HR,Payroll,2011,San Francisco US,$746M,$9.5B,General Catalyst,300K+ businesses,-,gusto.com
+Eightfold AI,AI 채용 및 인재 관리,AI HR,Talent,2016,Santa Clara US,$420M,$2.1B,SoftBank General Catalyst,Enterprise,-,eightfold.ai
+Pymetrics,AI 채용 평가. Harver 합병,AI HR,Assessment,2012,New York US,$68M,-,Khosla,Enterprise,-,pymetrics.ai
+HireVue,AI 비디오 면접,AI HR,Recruiting,2004,South Jordan US,$93M,$500M,Sequoia,Enterprise,-,hirevue.com
+Beamery,AI 인재 확보 플랫폼,AI HR,Talent,2014,London UK,$178M,$800M,NEA Ontario Teachers,Enterprise,-,beamery.com
+Textio,AI 채용 공고 최적화,AI HR,Recruiting,2014,Seattle US,$42M,-,Emergence,Enterprise,-,textio.com
+The Trade Desk,AI 광고 플랫폼,AI Marketing,Advertising,2009,Ventura US,Public,$58B (public),Public,$2.4B,$2.4B,thetradedesk.com
+Persado,AI 마케팅 언어 생성,AI Marketing,Content,2012,New York US,$130M,-,Goldman Sachs,Enterprise,-,persado.com
+Albert,AI 자율 마케팅 플랫폼,AI Marketing,Advertising,2014,Tel Aviv Israel,$18M,-,Blumberg Capital,Brands,-,albert.ai
+Smartly.io,AI 소셜 광고 자동화,AI Marketing,Social Ads,2013,Helsinki Finland,$55M,-,Highland Europe,700+ brands,-,smartly.io
+Phrasee,AI 마케팅 카피 최적화,AI Marketing,Content,2015,London UK,$31M,-,Octopus Ventures,Enterprise,-,phrasee.co

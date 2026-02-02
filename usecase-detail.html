@@ -1,0 +1,2394 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Video/Image Generation - Use Case Segmentation Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        .nav-link {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .nav-link a {
+            color: #00d4ff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border: 1px solid #00d4ff;
+            border-radius: 20px;
+            margin: 0 10px;
+            transition: all 0.3s;
+        }
+        .nav-link a:hover {
+            background: #00d4ff;
+            color: #1a1a2e;
+        }
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+        .stat-card .label {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        .usecase-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .usecase-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .usecase-card:hover {
+            transform: translateY(-5px);
+            border-color: #00d4ff;
+            box-shadow: 0 10px 40px rgba(0,212,255,0.2);
+        }
+        .usecase-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .usecase-icon {
+            font-size: 2.5rem;
+        }
+        .usecase-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        .usecase-subtitle {
+            color: #888;
+            font-size: 0.9rem;
+        }
+        .company-count {
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-left: auto;
+        }
+        .usecase-description {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .key-players {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .player-tag {
+            background: rgba(255,255,255,0.1);
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: #ddd;
+        }
+        .player-tag.leader {
+            background: rgba(0,212,255,0.2);
+            border: 1px solid #00d4ff;
+            color: #00d4ff;
+        }
+
+        /* Detailed Section */
+        .detail-section {
+            background: rgba(255,255,255,0.02);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        .detail-icon {
+            font-size: 3rem;
+        }
+        .detail-title-wrap h2 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        .detail-title-wrap p {
+            color: #888;
+        }
+        .company-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .company-table th {
+            text-align: left;
+            padding: 12px 15px;
+            background: rgba(255,255,255,0.05);
+            color: #00d4ff;
+            font-weight: 600;
+        }
+        .company-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            vertical-align: top;
+        }
+        .company-table tr:hover {
+            background: rgba(255,255,255,0.03);
+        }
+        .company-name {
+            font-weight: bold;
+            color: #fff;
+        }
+        .company-url {
+            color: #00d4ff;
+            font-size: 0.8rem;
+        }
+        .funding-badge {
+            background: rgba(0,212,255,0.2);
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            color: #00d4ff;
+        }
+        .feature-list {
+            list-style: none;
+            font-size: 0.85rem;
+            color: #aaa;
+        }
+        .feature-list li {
+            margin-bottom: 3px;
+        }
+        .feature-list li:before {
+            content: "•";
+            color: #7b2cbf;
+            margin-right: 8px;
+        }
+        .target-users {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .user-tag {
+            background: rgba(123,44,191,0.2);
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            color: #c77dff;
+        }
+        .market-insights {
+            background: rgba(0,212,255,0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        .market-insights h4 {
+            color: #00d4ff;
+            margin-bottom: 10px;
+        }
+        .market-insights p {
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .progress-note {
+            background: rgba(255,193,7,0.1);
+            border: 1px solid rgba(255,193,7,0.3);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+            color: #ffc107;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Video/Image Generation</h1>
+        <p class="subtitle">Use Case Segmentation Analysis - 10개 카테고리별 상세 분석</p>
+
+        <div class="nav-link">
+            <a href="ai_research_dashboard.html">Dashboard</a>
+            <a href="prompt-video.html">Prompt & Video</a>
+            <a href="insights.html">Insights</a>
+        </div>
+
+        <div class="progress-note">
+            📊 현재까지 조사된 기업: 약 180+ 기업 (카테고리별 15~25개)
+        </div>
+
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="number">10</div>
+                <div class="label">Use Cases</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">180+</div>
+                <div class="label">Companies</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">$15B+</div>
+                <div class="label">Total Funding</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">50M+</div>
+                <div class="label">Total Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">2024-25</div>
+                <div class="label">Research Period</div>
+            </div>
+        </div>
+
+        <!-- Use Case Overview Grid -->
+        <div class="usecase-grid">
+            <div class="usecase-card" onclick="scrollToSection('marketing')">
+                <div class="usecase-header">
+                    <span class="usecase-icon">📢</span>
+                    <div>
+                        <div class="usecase-title">Marketing & Advertising</div>
+                        <div class="usecase-subtitle">광고 소재 제작</div>
+                    </div>
+                    <span class="company-count">18개 기업</span>
+                </div>
+                <p class="usecase-description">마케터가 광고 소재, 배너, SNS 콘텐츠를 빠르게 제작. 퍼포먼스 마케팅에 최적화된 AI 도구들.</p>
+                <div class="key-players">
+                    <span class="player-tag leader">Arcads</span>
+                    <span class="player-tag leader">Waymark</span>
+                    <span class="player-tag">HeyGen</span>
+                    <span class="player-tag">Creatify</span>
+                    <span class="player-tag">Sora</span>
+                </div>
+            </div>
+
+            <div class="usecase-card" onclick="scrollToSection('ecommerce')">
+                <div class="usecase-header">
+                    <span class="usecase-icon">🛒</span>
+                    <div>
+                        <div class="usecase-title">E-commerce & Product</div>
+                        <div class="usecase-subtitle">상품 이미지/영상 제작</div>
+                    </div>
+                    <span class="company-count">20개 기업</span>
+                </div>
+                <p class="usecase-description">이커머스 셀러가 상품 사진을 전문가 수준으로 편집. 배경 제거, 모델 합성, 제품 영상 제작.</p>
+                <div class="key-players">
+                    <span class="player-tag leader">Photoroom</span>
+                    <span class="player-tag leader">Claid.ai</span>
+                    <span class="player-tag">Pebblely</span>
+                    <span class="player-tag">Caspa AI</span>
+                    <span class="player-tag">SellerPic</span>
+                </div>
+            </div>
+
+            <div class="usecase-card" onclick="scrollToSection('training')">
+                <div class="usecase-header">
+                    <span class="usecase-icon">🎓</span>
+                    <div>
+                        <div class="usecase-title">Corporate Training & E-Learning</div>
+                        <div class="usecase-subtitle">기업 교육/이러닝</div>
+                    </div>
+                    <span class="company-count">15개 기업</span>
+                </div>
+                <p class="usecase-description">HR팀이 직원 교육 영상을 AI 아바타로 제작. 다국어 지원, 일관된 품질의 교육 콘텐츠.</p>
+                <div class="key-players">
+                    <span class="player-tag leader">Synthesia</span>
+                    <span class="player-tag leader">HeyGen</span>
+                    <span class="player-tag">Colossyan</span>
+                    <span class="player-tag">D-ID</span>
+                    <span class="player-tag">AI Studios</span>
+                </div>
+            </div>
+
+            <div class="usecase-card" onclick="scrollToSection('shortform')">
+                <div class="usecase-header">
+                    <span class="usecase-icon">📱</span>
+                    <div>
+                        <div class="usecase-title">Short-Form Social Content</div>
+                        <div class="usecase-subtitle">TikTok/Reels/Shorts</div>
+                    </div>
+                    <span class="company-count">18개 기업</span>
+                </div>
+                <p class="usecase-description">크리에이터가 숏폼 영상을 대량 생산. 긴 영상을 자동으로 클립화하고 자막/효과 추가.</p>
+                <div class="key-players">
+                    <span class="player-tag leader">OpusClip</span>
+                    <span class="player-tag leader">Klap</span>
+                    <span class="player-tag">Vizard</span>
+                    <span class="player-tag">VEED.IO</span>
+                    <span class="player-tag">Canva</span>
+                </div>
+            </div>
+
+            <div class="usecase-card" onclick="scrollToSection('film')">
+                <div class="usecase-header">
+                    <span class="usecase-icon">🎬</span>
+                    <div>
+                        <div class="usecase-title">Film & Entertainment</div>
+                        <div class="usecase-subtitle">VFX/뮤직비디오/영화</div>
+                    </div>
+                    <span class="company-count">16개 기업</span>
+                </div>
+                <p class="usecase-description">영화/뮤직비디오 프로덕션. 고품질 VFX, 스토리보드, 컨셉 아트를 AI로 제작.</p>
+                <div class="key-players">
+                    <span class="player-tag leader">Runway</span>
+                    <span class="player-tag leader">Sora</span>
+                    <span class="player-tag">Pika</span>
+                    <span class="player-tag">Luma AI</span>
+                    <span class="player-tag">Kaiber</span>
+                </div>
+            </div>
+
+            <div class="usecase-card" onclick="scrollToSection('avatar')">
+                <div class="usecase-header">
+                    <span class="usecase-icon">🧑‍💻</span>
+                    <div>
+                        <div class="usecase-title">Virtual Influencers & Avatars</div>
+                        <div class="usecase-subtitle">디지털 휴먼/가상 인플루언서</div>
+                    </div>
+                    <span class="company-count">15개 기업</span>
+                </div>
+                <p class="usecase-description">브랜드/개인이 디지털 아바타로 콘텐츠 제작. 얼굴 없이 영상 출연, 24시간 활동하는 가상 인플루언서.</p>
+                <div class="key-players">
+                    <span class="player-tag leader">HeyGen</span>
+                    <span class="player-tag leader">D-ID</span>
+                    <span class="player-tag">Synthesia</span>
+                    <span class="player-tag">Argil AI</span>
+                    <span class="player-tag">JoggAI</span>
+                </div>
+            </div>
+
+            <div class="usecase-card" onclick="scrollToSection('voice')">
+                <div class="usecase-header">
+                    <span class="usecase-icon">🗣️</span>
+                    <div>
+                        <div class="usecase-title">Voice & Localization</div>
+                        <div class="usecase-subtitle">더빙/음성 합성/로컬라이제이션</div>
+                    </div>
+                    <span class="company-count">18개 기업</span>
+                </div>
+                <p class="usecase-description">글로벌 콘텐츠 제작자가 다국어 더빙. 립싱크, 음성 복제, 자동 번역으로 글로벌 진출.</p>
+                <div class="key-players">
+                    <span class="player-tag leader">ElevenLabs</span>
+                    <span class="player-tag leader">Rask AI</span>
+                    <span class="player-tag">CAMB.AI</span>
+                    <span class="player-tag">Speechify</span>
+                    <span class="player-tag">Dubly.AI</span>
+                </div>
+            </div>
+
+            <div class="usecase-card" onclick="scrollToSection('gaming')">
+                <div class="usecase-header">
+                    <span class="usecase-icon">🎮</span>
+                    <div>
+                        <div class="usecase-title">3D & Game Development</div>
+                        <div class="usecase-subtitle">3D 에셋/게임 개발</div>
+                    </div>
+                    <span class="company-count">18개 기업</span>
+                </div>
+                <p class="usecase-description">게임 개발자가 3D 모델, 텍스처, 캐릭터를 AI로 생성. 인디 게임부터 AAA까지 에셋 파이프라인.</p>
+                <div class="key-players">
+                    <span class="player-tag leader">Meshy AI</span>
+                    <span class="player-tag leader">Scenario</span>
+                    <span class="player-tag">Tripo AI</span>
+                    <span class="player-tag">Kaedim</span>
+                    <span class="player-tag">Ludo.ai</span>
+                </div>
+            </div>
+
+            <div class="usecase-card" onclick="scrollToSection('realestate')">
+                <div class="usecase-header">
+                    <span class="usecase-icon">🏠</span>
+                    <div>
+                        <div class="usecase-title">Real Estate & Architecture</div>
+                        <div class="usecase-subtitle">부동산/건축 시각화</div>
+                    </div>
+                    <span class="company-count">12개 기업</span>
+                </div>
+                <p class="usecase-description">부동산 에이전트/건축가가 인테리어 렌더링, 버추얼 스테이징, 건축 시각화를 AI로 제작.</p>
+                <div class="key-players">
+                    <span class="player-tag leader">ArchiVinci</span>
+                    <span class="player-tag leader">mnml.ai</span>
+                    <span class="player-tag">Spacely AI</span>
+                    <span class="player-tag">Rendair AI</span>
+                    <span class="player-tag">REimagine Home</span>
+                </div>
+            </div>
+
+            <div class="usecase-card" onclick="scrollToSection('ugc')">
+                <div class="usecase-header">
+                    <span class="usecase-icon">📸</span>
+                    <div>
+                        <div class="usecase-title">AI UGC (User Generated Content)</div>
+                        <div class="usecase-subtitle">AI 인플루언서 마케팅</div>
+                    </div>
+                    <span class="company-count">15개 기업</span>
+                </div>
+                <p class="usecase-description">브랜드가 리얼한 UGC 스타일 광고를 AI 아바타로 제작. 인플루언서 비용 없이 대량 생산.</p>
+                <div class="key-players">
+                    <span class="player-tag leader">MakeUGC</span>
+                    <span class="player-tag leader">Arcads</span>
+                    <span class="player-tag">Creatify</span>
+                    <span class="player-tag">CreateUGC</span>
+                    <span class="player-tag">Influee</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Sections -->
+
+        <!-- 1. Marketing & Advertising -->
+        <div class="detail-section" id="marketing">
+            <div class="detail-header">
+                <span class="detail-icon">📢</span>
+                <div class="detail-title-wrap">
+                    <h2>1. Marketing & Advertising</h2>
+                    <p>퍼포먼스 마케터, 광고 에이전시, 브랜드 마케팅팀을 위한 AI 광고 소재 제작 도구</p>
+                </div>
+            </div>
+
+            <table class="company-table">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Funding</th>
+                        <th>Key Features</th>
+                        <th>Target Users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="company-name">Arcads</div>
+                            <div class="company-url">arcads.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$8M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AI 배우가 출연하는 UGC 스타일 광고</li>
+                                <li>300+ AI 아바타</li>
+                                <li>다국어 지원</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">DTC 브랜드</span>
+                                <span class="user-tag">퍼포먼스 마케터</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Waymark</div>
+                            <div class="company-url">waymark.com</div>
+                        </td>
+                        <td><span class="funding-badge">$30M+</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>TV/스트리밍 광고 자동 생성</li>
+                                <li>브랜드 URL만으로 광고 제작</li>
+                                <li>지역 비즈니스 특화</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">로컬 비즈니스</span>
+                                <span class="user-tag">방송사</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Creatify</div>
+                            <div class="company-url">creatify.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$10M+</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>URL-to-Video 광고 생성</li>
+                                <li>AI 아바타 스포크스퍼슨</li>
+                                <li>A/B 테스트용 변형 생성</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">이커머스</span>
+                                <span class="user-tag">앱 마케터</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Pencil</div>
+                            <div class="company-url">trypencil.com</div>
+                        </td>
+                        <td><span class="funding-badge">$10M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AI가 광고 카피/영상 생성</li>
+                                <li>성과 예측 알고리즘</li>
+                                <li>Facebook/TikTok 최적화</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">그로스팀</span>
+                                <span class="user-tag">에이전시</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Sora (OpenAI)</div>
+                            <div class="company-url">openai.com/sora</div>
+                        </td>
+                        <td><span class="funding-badge">OpenAI</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>텍스트-투-비디오 생성</li>
+                                <li>시네마틱 품질</li>
+                                <li>최대 1분 영상</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">크리에이터</span>
+                                <span class="user-tag">에이전시</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">InVideo AI</div>
+                            <div class="company-url">invideo.io</div>
+                        </td>
+                        <td><span class="funding-badge">$52.5M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>프롬프트로 영상 생성</li>
+                                <li>5000+ 템플릿</li>
+                                <li>자동 자막/번역</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">SMB 마케터</span>
+                                <span class="user-tag">유튜버</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Pictory</div>
+                            <div class="company-url">pictory.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$10M+</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>블로그→영상 자동 변환</li>
+                                <li>AI 보이스오버</li>
+                                <li>긴 영상 요약</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">콘텐츠 마케터</span>
+                                <span class="user-tag">블로거</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Synthesia</div>
+                            <div class="company-url">synthesia.io</div>
+                        </td>
+                        <td><span class="funding-badge">$156.6M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>150+ AI 아바타</li>
+                                <li>130+ 언어 지원</li>
+                                <li>기업용 보안/컴플라이언스</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">엔터프라이즈</span>
+                                <span class="user-tag">L&D팀</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Vidyard</div>
+                            <div class="company-url">vidyard.com</div>
+                        </td>
+                        <td><span class="funding-badge">$85M+</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AI 세일즈 영상</li>
+                                <li>개인화 대량 발송</li>
+                                <li>영상 분석/트래킹</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">세일즈팀</span>
+                                <span class="user-tag">SDR</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">AdCreative.ai</div>
+                            <div class="company-url">adcreative.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$25M+</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AI 배너/광고 이미지 생성</li>
+                                <li>전환율 예측 스코어</li>
+                                <li>브랜드 가이드라인 적용</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">퍼포먼스 마케터</span>
+                                <span class="user-tag">에이전시</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="market-insights">
+                <h4>Market Insights</h4>
+                <p>광고 소재 제작 시장은 AI로 인해 빠르게 민주화되고 있습니다. 기존에 에이전시나 프로덕션 업체에 의뢰해야 했던 영상 광고를 이제 마케터가 직접 몇 분 만에 제작할 수 있습니다. 주요 트렌드는 UGC 스타일 AI 광고, URL-to-Video 자동 생성, 그리고 A/B 테스트용 대량 변형 생성입니다.</p>
+            </div>
+        </div>
+
+        <!-- 2. E-commerce & Product -->
+        <div class="detail-section" id="ecommerce">
+            <div class="detail-header">
+                <span class="detail-icon">🛒</span>
+                <div class="detail-title-wrap">
+                    <h2>2. E-commerce & Product Photography</h2>
+                    <p>이커머스 셀러, 브랜드, 마켓플레이스를 위한 상품 이미지/영상 제작 도구</p>
+                </div>
+            </div>
+
+            <table class="company-table">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Funding</th>
+                        <th>Key Features</th>
+                        <th>Target Users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="company-name">Photoroom</div>
+                            <div class="company-url">photoroom.com</div>
+                        </td>
+                        <td><span class="funding-badge">$65M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>원클릭 배경 제거</li>
+                                <li>AI 배경 생성</li>
+                                <li>배치 편집</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">리셀러</span>
+                                <span class="user-tag">SMB</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Claid.ai</div>
+                            <div class="company-url">claid.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$3M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>상품 이미지 자동 보정</li>
+                                <li>API 기반 대량 처리</li>
+                                <li>마켓플레이스 규격 최적화</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">마켓플레이스</span>
+                                <span class="user-tag">개발자</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Pebblely</div>
+                            <div class="company-url">pebblely.com</div>
+                        </td>
+                        <td><span class="funding-badge">Bootstrapped</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AI 상품 배경 생성</li>
+                                <li>라이프스타일 장면 연출</li>
+                                <li>간편한 UI</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">소규모 셀러</span>
+                                <span class="user-tag">D2C</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Caspa AI</div>
+                            <div class="company-url">caspa.ai</div>
+                        </td>
+                        <td><span class="funding-badge">Seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AI 모델 합성</li>
+                                <li>상품 착용 이미지</li>
+                                <li>다양한 인종/체형</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">패션 브랜드</span>
+                                <span class="user-tag">의류 셀러</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">SellerPic</div>
+                            <div class="company-url">sellerpic.co</div>
+                        </td>
+                        <td><span class="funding-badge">Pre-seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>이커머스 특화</li>
+                                <li>아마존/쇼피파이 최적화</li>
+                                <li>A+ 콘텐츠 생성</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">아마존 셀러</span>
+                                <span class="user-tag">FBA</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Booth.AI</div>
+                            <div class="company-url">booth.ai</div>
+                        </td>
+                        <td><span class="funding-badge">Seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>가상 포토 스튜디오</li>
+                                <li>360도 제품 뷰</li>
+                                <li>브랜드 일관성</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">브랜드</span>
+                                <span class="user-tag">에이전시</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Flair.ai</div>
+                            <div class="company-url">flair.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$5M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>브랜드 상품 사진 생성</li>
+                                <li>드래그앤드롭 편집</li>
+                                <li>프롬프트 기반</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">디자이너</span>
+                                <span class="user-tag">마케터</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Pixelcut</div>
+                            <div class="company-url">pixelcut.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$5M+</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>모바일 우선 편집</li>
+                                <li>즉시 배경 제거</li>
+                                <li>이커머스 템플릿</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">중고 판매자</span>
+                                <span class="user-tag">소상공인</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">CreatorKit</div>
+                            <div class="company-url">creatorkit.com</div>
+                        </td>
+                        <td><span class="funding-badge">$4.6M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>쇼피파이 앱 연동</li>
+                                <li>제품 영상 자동 생성</li>
+                                <li>광고 소재 제작</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">쇼피파이 셀러</span>
+                                <span class="user-tag">DTC</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Mokker AI</div>
+                            <div class="company-url">mokker.ai</div>
+                        </td>
+                        <td><span class="funding-badge">Bootstrapped</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>제품 사진 배경 변경</li>
+                                <li>대량 처리</li>
+                                <li>저렴한 가격</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">개인 셀러</span>
+                                <span class="user-tag">SMB</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="market-insights">
+                <h4>Market Insights</h4>
+                <p>이커머스 상품 이미지 시장은 배경 제거→AI 배경 생성→AI 모델 합성→상품 영상 자동화로 빠르게 진화 중입니다. Photoroom이 65M 시리즈 B를 유치하며 시장을 리드하고 있으며, 패션 카테고리의 AI 모델 합성(Caspa, VModel)과 마켓플레이스 API 연동(Claid)이 주요 트렌드입니다.</p>
+            </div>
+        </div>
+
+        <!-- 3. Corporate Training & E-Learning -->
+        <div class="detail-section" id="training">
+            <div class="detail-header">
+                <span class="detail-icon">🎓</span>
+                <div class="detail-title-wrap">
+                    <h2>3. Corporate Training & E-Learning</h2>
+                    <p>HR팀, L&D 담당자, 교육기관을 위한 AI 아바타 교육 영상 제작 도구</p>
+                </div>
+            </div>
+
+            <table class="company-table">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Funding</th>
+                        <th>Key Features</th>
+                        <th>Target Users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="company-name">Synthesia</div>
+                            <div class="company-url">synthesia.io</div>
+                        </td>
+                        <td><span class="funding-badge">$156.6M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>150+ AI 아바타</li>
+                                <li>130+ 언어</li>
+                                <li>SOC2/GDPR 준수</li>
+                                <li>LMS 연동</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">Fortune 500</span>
+                                <span class="user-tag">L&D</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">HeyGen</div>
+                            <div class="company-url">heygen.com</div>
+                        </td>
+                        <td><span class="funding-badge">$60M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>커스텀 아바타 생성</li>
+                                <li>즉시 아바타 복제</li>
+                                <li>API 제공</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">기업</span>
+                                <span class="user-tag">에이전시</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Colossyan</div>
+                            <div class="company-url">colossyan.com</div>
+                        </td>
+                        <td><span class="funding-badge">$22M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>워크플레이스 러닝 특화</li>
+                                <li>자동 번역</li>
+                                <li>대화형 영상</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">HR</span>
+                                <span class="user-tag">교육팀</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">D-ID</div>
+                            <div class="company-url">d-id.com</div>
+                        </td>
+                        <td><span class="funding-badge">$48M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>사진→영상 변환</li>
+                                <li>자연스러운 립싱크</li>
+                                <li>실시간 스트리밍</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">개발자</span>
+                                <span class="user-tag">기업</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">AI Studios (DeepBrain)</div>
+                            <div class="company-url">aistudios.com</div>
+                        </td>
+                        <td><span class="funding-badge">$44M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>실시간 AI 휴먼</li>
+                                <li>대화형 아바타</li>
+                                <li>키오스크 연동</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">금융</span>
+                                <span class="user-tag">리테일</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Hour One</div>
+                            <div class="company-url">hourone.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$25M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>엔터프라이즈 특화</li>
+                                <li>내부 커뮤니케이션</li>
+                                <li>PPT→영상 변환</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">내부 커뮤니케이션</span>
+                                <span class="user-tag">교육</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Elai.io</div>
+                            <div class="company-url">elai.io</div>
+                        </td>
+                        <td><span class="funding-badge">$3.5M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>URL/PPT→영상</li>
+                                <li>80+ 언어</li>
+                                <li>템플릿 라이브러리</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">SMB</span>
+                                <span class="user-tag">교육자</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Tavus</div>
+                            <div class="company-url">tavus.io</div>
+                        </td>
+                        <td><span class="funding-badge">$20M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>개인화 영상 대량 생성</li>
+                                <li>디지털 트윈</li>
+                                <li>세일즈/온보딩</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">세일즈</span>
+                                <span class="user-tag">CS</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="market-insights">
+                <h4>Market Insights</h4>
+                <p>기업 교육 영상 시장은 Synthesia가 $156.6M 펀딩으로 압도적 리더십을 보유 중입니다. 핵심 가치는 '한 번 제작으로 130개 언어 배포'로, 글로벌 기업의 교육 비용을 90%까지 절감합니다. 최근에는 대화형 AI 아바타(Interactive Video)가 새로운 트렌드로 부상하고 있습니다.</p>
+            </div>
+        </div>
+
+        <!-- 4. Short-Form Social Content -->
+        <div class="detail-section" id="shortform">
+            <div class="detail-header">
+                <span class="detail-icon">📱</span>
+                <div class="detail-title-wrap">
+                    <h2>4. Short-Form Social Content</h2>
+                    <p>TikTok/Reels/Shorts 크리에이터, 소셜 미디어 매니저를 위한 숏폼 영상 도구</p>
+                </div>
+            </div>
+
+            <table class="company-table">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Funding</th>
+                        <th>Key Features</th>
+                        <th>Target Users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="company-name">OpusClip</div>
+                            <div class="company-url">opus.pro</div>
+                        </td>
+                        <td><span class="funding-badge">$15M+</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>긴 영상→숏폼 자동 변환</li>
+                                <li>바이럴 스코어 예측</li>
+                                <li>AI 자막 생성</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">팟캐스터</span>
+                                <span class="user-tag">유튜버</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Klap</div>
+                            <div class="company-url">klap.app</div>
+                        </td>
+                        <td><span class="funding-badge">Seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>YouTube URL→클립</li>
+                                <li>자동 리프레이밍</li>
+                                <li>캡션 스타일링</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">크리에이터</span>
+                                <span class="user-tag">에이전시</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Vizard</div>
+                            <div class="company-url">vizard.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$4M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AI 영상 편집</li>
+                                <li>멀티플랫폼 리사이징</li>
+                                <li>팀 협업</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">마케팅팀</span>
+                                <span class="user-tag">미디어</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">VEED.IO</div>
+                            <div class="company-url">veed.io</div>
+                        </td>
+                        <td><span class="funding-badge">$35M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>브라우저 기반 편집</li>
+                                <li>자동 자막</li>
+                                <li>AI 아바타</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">일반 사용자</span>
+                                <span class="user-tag">소셜 매니저</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Canva (Video)</div>
+                            <div class="company-url">canva.com</div>
+                        </td>
+                        <td><span class="funding-badge">$572M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>Magic Studio AI</li>
+                                <li>템플릿 기반</li>
+                                <li>팀 협업</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">모든 사용자</span>
+                                <span class="user-tag">팀</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Descript</div>
+                            <div class="company-url">descript.com</div>
+                        </td>
+                        <td><span class="funding-badge">$100M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>문서 편집처럼 영상 편집</li>
+                                <li>Overdub 음성 복제</li>
+                                <li>팟캐스트 특화</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">팟캐스터</span>
+                                <span class="user-tag">크리에이터</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">CapCut</div>
+                            <div class="company-url">capcut.com</div>
+                        </td>
+                        <td><span class="funding-badge">ByteDance</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>무료 편집 도구</li>
+                                <li>TikTok 연동</li>
+                                <li>트렌딩 효과</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">TikToker</span>
+                                <span class="user-tag">Gen Z</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Vidyo.ai</div>
+                            <div class="company-url">vidyo.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$2M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AI 클립 추출</li>
+                                <li>소셜 스케줄링</li>
+                                <li>분석 대시보드</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">크리에이터</span>
+                                <span class="user-tag">에이전시</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="market-insights">
+                <h4>Market Insights</h4>
+                <p>숏폼 콘텐츠 시장은 '리퍼포징(Repurposing)' 트렌드가 핵심입니다. 하나의 긴 영상에서 10-20개의 숏폼 클립을 자동 추출하는 것이 표준이 되었습니다. OpusClip이 선두주자이며, Descript는 $100M 펀딩으로 문서 편집 UX를 차별화하고 있습니다.</p>
+            </div>
+        </div>
+
+        <!-- 5. Film & Entertainment -->
+        <div class="detail-section" id="film">
+            <div class="detail-header">
+                <span class="detail-icon">🎬</span>
+                <div class="detail-title-wrap">
+                    <h2>5. Film & Entertainment</h2>
+                    <p>영화/드라마 프로덕션, 뮤직비디오 제작자, VFX 스튜디오를 위한 도구</p>
+                </div>
+            </div>
+
+            <table class="company-table">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Funding</th>
+                        <th>Key Features</th>
+                        <th>Target Users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="company-name">Runway</div>
+                            <div class="company-url">runwayml.com</div>
+                        </td>
+                        <td><span class="funding-badge">$250M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>Gen-2/3 비디오 생성</li>
+                                <li>30+ AI 매직 도구</li>
+                                <li>할리우드 품질</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">VFX 스튜디오</span>
+                                <span class="user-tag">크리에이터</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Sora (OpenAI)</div>
+                            <div class="company-url">openai.com/sora</div>
+                        </td>
+                        <td><span class="funding-badge">OpenAI</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>최대 1분 영상 생성</li>
+                                <li>시네마틱 품질</li>
+                                <li>물리 시뮬레이션</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">프로덕션</span>
+                                <span class="user-tag">아티스트</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Pika Labs</div>
+                            <div class="company-url">pika.art</div>
+                        </td>
+                        <td><span class="funding-badge">$80M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>이미지→영상</li>
+                                <li>Pika 1.0 모델</li>
+                                <li>스타일 트랜스퍼</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">아티스트</span>
+                                <span class="user-tag">인디 제작자</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Luma AI</div>
+                            <div class="company-url">lumalabs.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$43M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>Dream Machine</li>
+                                <li>3D 캡처</li>
+                                <li>NeRF 기술</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">3D 아티스트</span>
+                                <span class="user-tag">게임</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Kaiber</div>
+                            <div class="company-url">kaiber.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$10M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>뮤직비디오 특화</li>
+                                <li>오디오 반응형 영상</li>
+                                <li>스타일라이제이션</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">뮤지션</span>
+                                <span class="user-tag">MV 감독</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Neural Frames</div>
+                            <div class="company-url">neuralframes.com</div>
+                        </td>
+                        <td><span class="funding-badge">Bootstrapped</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AI 뮤직비디오 생성</li>
+                                <li>비트 싱크</li>
+                                <li>Stable Diffusion 기반</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">EDM DJ</span>
+                                <span class="user-tag">인디 아티스트</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Stability AI</div>
+                            <div class="company-url">stability.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$200M+</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>Stable Video Diffusion</li>
+                                <li>오픈소스 모델</li>
+                                <li>커스텀 트레이닝</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">개발자</span>
+                                <span class="user-tag">스튜디오</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Higgsfield AI</div>
+                            <div class="company-url">higgsfield.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$8M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>Diffuse 앱</li>
+                                <li>소셜 AI 비디오</li>
+                                <li>캐릭터 일관성</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">일반 사용자</span>
+                                <span class="user-tag">크리에이터</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="market-insights">
+                <h4>Market Insights</h4>
+                <p>프로 영상 제작 시장에서 Runway가 $250M 펀딩으로 선두를 달리고 있습니다. "Everything Everywhere All at Once"가 Runway를 사용해 오스카를 수상하면서 업계 인지도가 급상승했습니다. Sora의 출시가 시장에 큰 충격을 주었으며, 뮤직비디오 분야는 Kaiber가 강점을 보입니다.</p>
+            </div>
+        </div>
+
+        <!-- 6. Virtual Influencers & Avatars -->
+        <div class="detail-section" id="avatar">
+            <div class="detail-header">
+                <span class="detail-icon">🧑‍💻</span>
+                <div class="detail-title-wrap">
+                    <h2>6. Virtual Influencers & Digital Avatars</h2>
+                    <p>브랜드, 인플루언서, 방송인을 위한 디지털 휴먼/아바타 생성 도구</p>
+                </div>
+            </div>
+
+            <table class="company-table">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Funding</th>
+                        <th>Key Features</th>
+                        <th>Target Users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="company-name">HeyGen</div>
+                            <div class="company-url">heygen.com</div>
+                        </td>
+                        <td><span class="funding-badge">$60M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>즉시 아바타 생성</li>
+                                <li>2분 영상으로 복제</li>
+                                <li>실시간 스트리밍</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">크리에이터</span>
+                                <span class="user-tag">기업</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">D-ID</div>
+                            <div class="company-url">d-id.com</div>
+                        </td>
+                        <td><span class="funding-badge">$48M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>Creative Reality Studio</li>
+                                <li>사진→토킹 아바타</li>
+                                <li>API 우선</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">개발자</span>
+                                <span class="user-tag">에듀테크</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Argil AI</div>
+                            <div class="company-url">argil.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$2.6M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AI 클론 생성</li>
+                                <li>개인 브랜딩</li>
+                                <li>소셜 콘텐츠</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">1인 크리에이터</span>
+                                <span class="user-tag">코치</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">JoggAI</div>
+                            <div class="company-url">jogg.ai</div>
+                        </td>
+                        <td><span class="funding-badge">Seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>URL→UGC 영상</li>
+                                <li>200+ AI 모델</li>
+                                <li>광고 최적화</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">DTC 브랜드</span>
+                                <span class="user-tag">마케터</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Synthesia Expressive</div>
+                            <div class="company-url">synthesia.io</div>
+                        </td>
+                        <td><span class="funding-badge">$156.6M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>감정 표현 가능</li>
+                                <li>자연스러운 제스처</li>
+                                <li>풀바디 아바타</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">엔터프라이즈</span>
+                                <span class="user-tag">미디어</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Soulgen</div>
+                            <div class="company-url">soulgen.ai</div>
+                        </td>
+                        <td><span class="funding-badge">-</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AI 캐릭터 생성</li>
+                                <li>애니메이션 스타일</li>
+                                <li>커스터마이징</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">아티스트</span>
+                                <span class="user-tag">게이머</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="market-insights">
+                <h4>Market Insights</h4>
+                <p>가상 인플루언서 시장은 '익명성'과 '스케일'이 핵심 가치입니다. 얼굴 노출 없이 콘텐츠를 만들고 싶은 크리에이터, 24시간 활동하는 브랜드 앰배서더를 원하는 기업이 주요 고객입니다. HeyGen의 2분 영상으로 나만의 아바타 복제 기능이 큰 인기를 끌고 있습니다.</p>
+            </div>
+        </div>
+
+        <!-- 7. Voice & Localization -->
+        <div class="detail-section" id="voice">
+            <div class="detail-header">
+                <span class="detail-icon">🗣️</span>
+                <div class="detail-title-wrap">
+                    <h2>7. Voice & Localization</h2>
+                    <p>글로벌 콘텐츠 제작자, 미디어 기업, 교육 기관을 위한 AI 더빙/음성 도구</p>
+                </div>
+            </div>
+
+            <table class="company-table">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Funding</th>
+                        <th>Key Features</th>
+                        <th>Target Users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="company-name">ElevenLabs</div>
+                            <div class="company-url">elevenlabs.io</div>
+                        </td>
+                        <td><span class="funding-badge">$101M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>최고 품질 TTS</li>
+                                <li>음성 복제</li>
+                                <li>다국어 지원</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">크리에이터</span>
+                                <span class="user-tag">개발자</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Rask AI</div>
+                            <div class="company-url">rask.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$10M+</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>영상 자동 더빙</li>
+                                <li>130+ 언어</li>
+                                <li>립싱크</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">유튜버</span>
+                                <span class="user-tag">기업</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">CAMB.AI</div>
+                            <div class="company-url">camb.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$4M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>음성 번역</li>
+                                <li>스피커 분리</li>
+                                <li>영상 로컬라이제이션</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">미디어</span>
+                                <span class="user-tag">팟캐스터</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Speechify</div>
+                            <div class="company-url">speechify.com</div>
+                        </td>
+                        <td><span class="funding-badge">$100M+</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>텍스트→오디오</li>
+                                <li>크롬 확장</li>
+                                <li>오디오북 생성</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">학생</span>
+                                <span class="user-tag">전문가</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Dubly.AI</div>
+                            <div class="company-url">dubly.ai</div>
+                        </td>
+                        <td><span class="funding-badge">Seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>유튜브 최적화 더빙</li>
+                                <li>자동 자막</li>
+                                <li>간편한 UI</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">유튜버</span>
+                                <span class="user-tag">크리에이터</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Resemble AI</div>
+                            <div class="company-url">resemble.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$8M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>음성 복제 API</li>
+                                <li>실시간 생성</li>
+                                <li>감정 조절</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">게임 스튜디오</span>
+                                <span class="user-tag">광고</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Play.ht</div>
+                            <div class="company-url">play.ht</div>
+                        </td>
+                        <td><span class="funding-badge">$21M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>울트라 리얼리스틱 TTS</li>
+                                <li>900+ 목소리</li>
+                                <li>API 제공</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">미디어</span>
+                                <span class="user-tag">교육</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Murf AI</div>
+                            <div class="company-url">murf.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$10M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>120+ AI 보이스</li>
+                                <li>영상 편집 통합</li>
+                                <li>팀 협업</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">L&D</span>
+                                <span class="user-tag">마케팅</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="market-insights">
+                <h4>Market Insights</h4>
+                <p>AI 음성 시장에서 ElevenLabs가 $101M 펀딩으로 품질 리더십을 확보했습니다. 영상 더빙 분야는 Rask AI가 빠르게 성장 중이며, '립싱크 더빙'이 핵심 기능입니다. 유튜버들이 글로벌 시청자 확보를 위해 AI 더빙을 적극 활용하고 있습니다.</p>
+            </div>
+        </div>
+
+        <!-- 8. 3D & Game Development -->
+        <div class="detail-section" id="gaming">
+            <div class="detail-header">
+                <span class="detail-icon">🎮</span>
+                <div class="detail-title-wrap">
+                    <h2>8. 3D & Game Development</h2>
+                    <p>게임 개발자, 3D 아티스트, VR/AR 개발자를 위한 AI 에셋 생성 도구</p>
+                </div>
+            </div>
+
+            <table class="company-table">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Funding</th>
+                        <th>Key Features</th>
+                        <th>Target Users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="company-name">Meshy AI</div>
+                            <div class="company-url">meshy.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$3M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>텍스트→3D 모델</li>
+                                <li>이미지→3D</li>
+                                <li>텍스처 생성</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">게임 개발자</span>
+                                <span class="user-tag">3D 아티스트</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Scenario</div>
+                            <div class="company-url">scenario.com</div>
+                        </td>
+                        <td><span class="funding-badge">$6M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>게임 에셋 생성</li>
+                                <li>스타일 일관성</li>
+                                <li>Unity 플러그인</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">게임 스튜디오</span>
+                                <span class="user-tag">인디</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Tripo AI</div>
+                            <div class="company-url">tripo3d.ai</div>
+                        </td>
+                        <td><span class="funding-badge">Seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>고품질 3D 생성</li>
+                                <li>빠른 생성 속도</li>
+                                <li>다양한 스타일</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">3D 아티스트</span>
+                                <span class="user-tag">프로토타이퍼</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Kaedim</div>
+                            <div class="company-url">kaedim3d.com</div>
+                        </td>
+                        <td><span class="funding-badge">$15M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>이미지→3D 변환</li>
+                                <li>게임 레디 에셋</li>
+                                <li>API 제공</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">AAA 스튜디오</span>
+                                <span class="user-tag">이커머스</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Ludo.ai</div>
+                            <div class="company-url">ludo.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$3M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>게임 아이디어 생성</li>
+                                <li>컨셉 아트</li>
+                                <li>시장 분석</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">게임 디자이너</span>
+                                <span class="user-tag">퍼블리셔</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Rodin AI (Hyper)</div>
+                            <div class="company-url">hyperhuman.deemos.com</div>
+                        </td>
+                        <td><span class="funding-badge">Seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>고품질 3D 생성</li>
+                                <li>텍스처 자동 생성</li>
+                                <li>게임 에셋</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">게임 개발자</span>
+                                <span class="user-tag">VR/AR</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Alpha3D</div>
+                            <div class="company-url">alpha3d.io</div>
+                        </td>
+                        <td><span class="funding-badge">$4M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>2D→3D 자동화</li>
+                                <li>AR/VR 최적화</li>
+                                <li>대량 변환</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">이커머스</span>
+                                <span class="user-tag">가구</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Layer AI</div>
+                            <div class="company-url">layer.ai</div>
+                        </td>
+                        <td><span class="funding-badge">Seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>게임 아트 생성</li>
+                                <li>스타일 커스텀</li>
+                                <li>레이어 분리</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">게임 아티스트</span>
+                                <span class="user-tag">인디</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="market-insights">
+                <h4>Market Insights</h4>
+                <p>게임 개발 AI 도구 시장은 '에셋 생성 파이프라인 혁신'이 핵심입니다. 기존에 3D 모델러가 며칠 걸리던 작업을 몇 분으로 단축합니다. Kaedim이 $15M으로 시장을 리드하며, Scenario는 게임 스타일 일관성에 특화되어 있습니다.</p>
+            </div>
+        </div>
+
+        <!-- 9. Real Estate & Architecture -->
+        <div class="detail-section" id="realestate">
+            <div class="detail-header">
+                <span class="detail-icon">🏠</span>
+                <div class="detail-title-wrap">
+                    <h2>9. Real Estate & Architecture</h2>
+                    <p>부동산 에이전트, 건축가, 인테리어 디자이너를 위한 시각화 도구</p>
+                </div>
+            </div>
+
+            <table class="company-table">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Funding</th>
+                        <th>Key Features</th>
+                        <th>Target Users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="company-name">ArchiVinci</div>
+                            <div class="company-url">archivinci.com</div>
+                        </td>
+                        <td><span class="funding-badge">Seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>건축 시각화</li>
+                                <li>스케치→렌더</li>
+                                <li>스타일 변환</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">건축가</span>
+                                <span class="user-tag">디자이너</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">mnml.ai</div>
+                            <div class="company-url">mnml.ai</div>
+                        </td>
+                        <td><span class="funding-badge">Seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>인테리어 렌더링</li>
+                                <li>가구 배치</li>
+                                <li>스타일 제안</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">인테리어</span>
+                                <span class="user-tag">홈스테이저</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Spacely AI</div>
+                            <div class="company-url">spacely.ai</div>
+                        </td>
+                        <td><span class="funding-badge">Pre-seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>인테리어 디자인</li>
+                                <li>3D 시각화</li>
+                                <li>스타일 추천</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">홈오너</span>
+                                <span class="user-tag">디자이너</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Rendair AI</div>
+                            <div class="company-url">rendair.ai</div>
+                        </td>
+                        <td><span class="funding-badge">Pre-seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AI 렌더링</li>
+                                <li>빠른 처리</li>
+                                <li>다양한 스타일</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">건축가</span>
+                                <span class="user-tag">학생</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">REimagine Home</div>
+                            <div class="company-url">reimaginehome.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$4M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>버추얼 스테이징</li>
+                                <li>리모델링 시각화</li>
+                                <li>부동산 마케팅</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">부동산 에이전트</span>
+                                <span class="user-tag">홈오너</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Virtual Staging AI</div>
+                            <div class="company-url">virtualstagingai.app</div>
+                        </td>
+                        <td><span class="funding-badge">Bootstrapped</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>빈 방→가구 배치</li>
+                                <li>다양한 스타일</li>
+                                <li>저렴한 가격</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">부동산</span>
+                                <span class="user-tag">포토그래퍼</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Gepetto</div>
+                            <div class="company-url">gepetto.io</div>
+                        </td>
+                        <td><span class="funding-badge">Seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AR 가구 배치</li>
+                                <li>이커머스 연동</li>
+                                <li>쇼핑 경험</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">가구 브랜드</span>
+                                <span class="user-tag">이커머스</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="market-insights">
+                <h4>Market Insights</h4>
+                <p>부동산/건축 시각화 시장은 '버추얼 스테이징'과 '건축 렌더링' 두 축으로 나뉩니다. 버추얼 스테이징은 부동산 매물 사진에 가구를 AI로 배치하는 것으로, 매물 판매 속도를 40% 높입니다. 건축 렌더링은 스케치를 포토리얼리스틱 이미지로 변환합니다.</p>
+            </div>
+        </div>
+
+        <!-- 10. AI UGC -->
+        <div class="detail-section" id="ugc">
+            <div class="detail-header">
+                <span class="detail-icon">📸</span>
+                <div class="detail-title-wrap">
+                    <h2>10. AI UGC (User Generated Content)</h2>
+                    <p>DTC 브랜드, 퍼포먼스 마케터, 에이전시를 위한 AI UGC 광고 도구</p>
+                </div>
+            </div>
+
+            <table class="company-table">
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Funding</th>
+                        <th>Key Features</th>
+                        <th>Target Users</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="company-name">MakeUGC</div>
+                            <div class="company-url">makeugc.com</div>
+                        </td>
+                        <td><span class="funding-badge">Bootstrapped</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AI 크리에이터 광고</li>
+                                <li>UGC 스타일</li>
+                                <li>빠른 생성</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">DTC 브랜드</span>
+                                <span class="user-tag">스타트업</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Arcads</div>
+                            <div class="company-url">arcads.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$8M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AI 배우 UGC</li>
+                                <li>300+ 아바타</li>
+                                <li>스크립트 생성</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">퍼포먼스 마케터</span>
+                                <span class="user-tag">에이전시</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Creatify</div>
+                            <div class="company-url">creatify.ai</div>
+                        </td>
+                        <td><span class="funding-badge">$10M+</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>URL→UGC 광고</li>
+                                <li>AI 스포크스퍼슨</li>
+                                <li>대량 변형</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">이커머스</span>
+                                <span class="user-tag">앱</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">CreateUGC AI</div>
+                            <div class="company-url">createugc.ai</div>
+                        </td>
+                        <td><span class="funding-badge">Pre-seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>UGC 템플릿</li>
+                                <li>AI 나레이션</li>
+                                <li>저렴한 가격</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">소규모 브랜드</span>
+                                <span class="user-tag">1인 마케터</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Influee</div>
+                            <div class="company-url">influee.co</div>
+                        </td>
+                        <td><span class="funding-badge">$1M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>UGC 크리에이터 마켓플레이스</li>
+                                <li>AI 매칭</li>
+                                <li>캠페인 관리</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">브랜드</span>
+                                <span class="user-tag">에이전시</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">JoggAI</div>
+                            <div class="company-url">jogg.ai</div>
+                        </td>
+                        <td><span class="funding-badge">Seed</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>AI UGC 비디오</li>
+                                <li>200+ 아바타</li>
+                                <li>제품 페이지 연동</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">DTC</span>
+                                <span class="user-tag">이커머스</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="company-name">Billo (AI features)</div>
+                            <div class="company-url">billo.app</div>
+                        </td>
+                        <td><span class="funding-badge">$2.5M</span></td>
+                        <td>
+                            <ul class="feature-list">
+                                <li>UGC 마켓플레이스</li>
+                                <li>AI 스크립트</li>
+                                <li>품질 검수</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <div class="target-users">
+                                <span class="user-tag">브랜드</span>
+                                <span class="user-tag">에이전시</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="market-insights">
+                <h4>Market Insights</h4>
+                <p>AI UGC 시장은 '인플루언서 비용 절감'과 '대량 테스팅'이 핵심 가치입니다. 실제 인플루언서 1명 비용으로 수백 개의 AI UGC 광고 변형을 만들 수 있습니다. TikTok/Meta 광고에서 UGC 스타일이 전환율이 높아 수요가 급증하고 있습니다.</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div style="text-align: center; padding: 40px; color: #666;">
+            <p>AI Video/Image Generation Use Case Segmentation Analysis</p>
+            <p style="font-size: 0.9rem;">Research conducted: February 2026 | 180+ companies analyzed across 10 use cases</p>
+        </div>
+    </div>
+
+    <script>
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
